@@ -11,10 +11,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type listOpts struct {
+	page     int
+}
+
 func NewCmdList() *cobra.Command {
+	opts := listOpts{}
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: "List Classrooms.",
+		Long: "List of Classrooms you own.",
+		Example: `$ gh classroom list --page 1`,
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("List Classrooms")
 			for_api := []string{"api", "/classrooms"}
@@ -29,5 +36,7 @@ func NewCmdList() *cobra.Command {
 			}
 		},
 	}
+
+	cmd.Flags().IntVarP(&opts.page, "page", "p", 1, "Search by page number.")
 	return cmd
 }
