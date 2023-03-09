@@ -4,39 +4,62 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/cli/go-gh"
-	"github.com/cli/go-gh/pkg/jsonpretty"
-
+	"github.com/cli/go-gh/pkg/tableprinter"
 	"github.com/spf13/cobra"
 )
 
-type listOpts struct {
-	page     int
+type Classroom struct {
+	Id       int    `json:"id"`
+	Name     string `json:"name"`
+	Archived bool   `json:"archived"`
+	Url      string `json:"url"`
 }
 
 func NewCmdList() *cobra.Command {
-	opts := listOpts{}
+	var web bool
+	var page int
+	var perPage int
+
 	cmd := &cobra.Command{
-		Use:   "list",
-		Short: "List Classrooms.",
-		Long: "List of Classrooms you own.",
+		Use:     "list",
+		Short:   "List Classrooms",
+		Long:    "List of Classrooms you own.",
 		Example: `$ gh classroom list --page 1`,
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("List Classrooms")
-			for_api := []string{"api", "/classrooms"}
-			result, _, err := gh.Exec(for_api...)
+			client, err := gh.RESTClient(nil)
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			err = jsonpretty.Format(os.Stdout, &result, " ", true)
+			var response []Classroom
+			err = client.Get(fmt.Sprintf("classrooms?page=%v&per_page=%v", page, perPage), &response)
 			if err != nil {
 				log.Fatal(err)
 			}
+
+			fmt.Println("Classrooms")
+			t := tableprinter.New(os.Stdout, true, 14)
+			t.AddField("ID", tableprinter.WithTruncate(nil))
+			t.AddField("Name", tableprinter.WithTruncate(nil))
+			t.AddField("Archived", tableprinter.WithTruncate(nil))
+			t.AddField("URL", tableprinter.WithTruncate(nil))
+			t.EndRow()
+			for _, classroom := range response {
+				t.AddField(strconv.Itoa(classroom.Id), tableprinter.WithTruncate(nil))
+				t.AddField(classroom.Name, tableprinter.WithTruncate(nil))
+				t.AddField(strconv.FormatBool(classroom.Archived))
+				t.AddField(classroom.Url, tableprinter.WithTruncate(nil))
+				t.EndRow()
+			}
+			t.Render()
 		},
 	}
 
-	cmd.Flags().IntVar(&opts.page, "page", 1, "Search by page number.")
+	cmd.Flags().BoolVarP(&web, "web", "", false, "Open the classroom list in a browser")
+	cmd.Flags().IntVarP(&page, "page", "", 1, "Page number")
+	cmd.Flags().IntVarP(&perPage, "per-page", "", 30, "Number of classrooms per page")
 	return cmd
 }
