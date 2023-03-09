@@ -58,8 +58,8 @@ func NewCmdList() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().BoolVarP(&web, "web", "", false, "Open the classroom list in a browser")
-	cmd.Flags().IntVarP(&page, "page", "", 1, "Page number")
-	cmd.Flags().IntVarP(&perPage, "per-page", "", 30, "Number of classrooms per page")
+	cmd.Flags().BoolVar(&web, "web", false, "Open the classroom list in a browser")
+	cmd.Flags().IntVar(&page, "page", 1, "Page number")
+	cmd.Flags().IntVar(&perPage, "per-page", 30, "Number of classrooms per page")
 	return cmd
 }
