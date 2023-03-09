@@ -2,15 +2,19 @@ package assignments
 
 import (
 	"bytes"
-	"fmt"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v1"
-	"testing"
 )
 
 func TestOutputsHelpTestWithNoArgs(t *testing.T) {
+	defer gock.Off()
+
 	gock.New("https://api.github.com").
 		Get("/classrooms/1234/assignments").
+		MatchParam("page", "1").
+		MatchParam("per_page", "30").
 		Reply(200).
 		JSON(`[{
     "id": 1,
@@ -36,17 +40,22 @@ func TestOutputsHelpTestWithNoArgs(t *testing.T) {
       "url": "https://classroom.github.com/classrooms/146-classroom-over-api"
     }
   }]`)
+
 	actual := new(bytes.Buffer)
+
 	command := NewCmdAssignments()
 	command.SetOut(actual)
 	command.SetErr(actual)
 	command.SetArgs([]string{
-		fmt.Sprintf("--%s=%s", "classroom-id", "1234"),
+		"assignments",
+		"-c1234",
 	})
 
-	command.Execute()
+	err := command.Execute()
+	assert.NoError(t, err, "Should not error")
+	expected := "1 Assignment for Classroom over api\n\n" + 
+	"ID\tTitle\tSubmission Public\tType\tEditor\tInvitation Link\tAccepted\tSubmissions\tPassing\n" + 
+	"1\tNew assignment here\tfalse\tindividual\t\thttp://github.localhost/assignment-invitations/594b54b4dcffafea7d9671116e7ae8d4\t0\t0\t0\n"
 
-	expected := "hello there"
-
-	assert.Equal(t, actual.String(), expected, "Actual output should match expected output")
+	assert.Equal(t, expected, actual.String(), "Actual output should match expected output")
 }

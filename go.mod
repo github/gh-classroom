@@ -3,6 +3,7 @@ module github.com/github/gh-classroom
 go 1.19
 
 require (
+	github.com/cli/cli/v2 v2.24.3
 	github.com/cli/go-gh v1.2.1
 	github.com/spf13/cobra v1.6.1
 )
@@ -10,7 +11,6 @@ require (
 require (
 	github.com/briandowns/spinner v1.18.1 // indirect
 	github.com/cli/browser v1.1.0 // indirect
-	github.com/cli/cli/v2 v2.24.3
 	github.com/cli/safeexec v1.0.1 // indirect
 	github.com/cli/shurcooL-graphql v0.0.2 // indirect
 	github.com/fatih/color v1.7.0 // indirect

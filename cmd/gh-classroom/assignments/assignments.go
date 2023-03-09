@@ -3,7 +3,6 @@ package assignments
 import (
 	"fmt"
 	"log"
-	"os"
 	"strconv"
 
 	"github.com/cli/cli/v2/pkg/iostreams"
@@ -34,22 +33,21 @@ func NewCmdAssignments() *cobra.Command {
 			if classroomID == 0 {
 				log.Fatal("Missing classroom ID")
 			}
+
 			client, err := gh.RESTClient(nil)
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			var response []classroom.Assignment
-			err = client.Get(fmt.Sprintf("classrooms/%v/assignments", classroomID), &response)
+			assignmentList, err := classroom.ListAssignments(client, classroomID, page, perPage)
+
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			assignmentList := classroom.NewAssignmentList(response)
+			fmt.Fprintln(cmd.OutOrStderr(), assignmentListSummary(assignmentList, cs))
 
-			fmt.Println(assignmentListSummary(assignmentList, cs))
-
-			t := tableprinter.New(os.Stdout, term.IsTerminalOutput(), 14)
+			t := tableprinter.New(cmd.OutOrStdout(), term.IsTerminalOutput(), 14)
 
 			if web {
 				if term.IsTerminalOutput() {
@@ -59,11 +57,27 @@ func NewCmdAssignments() *cobra.Command {
 				browser.Browse(assignmentList.Url())
 				return
 			}
+			t.AddField("ID", tableprinter.WithTruncate(nil))
+			t.AddField("Title", tableprinter.WithTruncate(nil))
+			t.AddField("Submission Public", tableprinter.WithTruncate(nil))
+			t.AddField("Type", tableprinter.WithTruncate(nil))
+			t.AddField("Editor", tableprinter.WithTruncate(nil))
+			t.AddField("Invitation Link", tableprinter.WithTruncate(nil))
+			t.AddField("Accepted", tableprinter.WithTruncate(nil))
+			t.AddField("Submissions", tableprinter.WithTruncate(nil))
+			t.AddField("Passing", tableprinter.WithTruncate(nil))
+			t.EndRow()
 
-			for _, assignment := range response {
+			for _, assignment := range assignmentList.Assignments {
 				t.AddField(cs.Green(strconv.Itoa(assignment.Id)), tableprinter.WithTruncate(nil))
 				t.AddField(assignment.Title, tableprinter.WithTruncate(nil))
 				t.AddField(cs.Gray(strconv.FormatBool(assignment.PublicRepo)), tableprinter.WithTruncate(nil))
+				t.AddField(assignment.AssignmentType, tableprinter.WithTruncate(nil))
+				t.AddField(assignment.Editor, tableprinter.WithTruncate(nil))
+				t.AddField(assignment.InviteLink, tableprinter.WithTruncate(nil))
+				t.AddField(strconv.Itoa(assignment.Accepted), tableprinter.WithTruncate(nil))
+				t.AddField(strconv.Itoa(assignment.Submissions), tableprinter.WithTruncate(nil))
+				t.AddField(strconv.Itoa(assignment.Passing), tableprinter.WithTruncate(nil))
 				t.EndRow()
 			}
 			t.Render()
@@ -85,12 +99,9 @@ func colorForVisibility(public bool) string {
 }
 
 func assignmentListSummary(a classroom.AssignmentList, cs *iostreams.ColorScheme) string {
-	switch a.Count {
-	case 0:
+	if a.Count == 0 {
 		return fmt.Sprintf("No assignments for %v\n", cs.Blue(a.Classroom.Name))
-	case 1:
-		return fmt.Sprintf("%v for %v (id: %v)\n", text.Pluralize(a.Count, "Assignment"), cs.Blue(a.Classroom.Name))
-	default:
+	} else {
 		return fmt.Sprintf("%v for %v\n", text.Pluralize(a.Count, "Assignment"), cs.Blue(a.Classroom.Name))
 	}
 }
