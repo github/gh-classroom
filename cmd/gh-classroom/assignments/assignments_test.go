@@ -47,12 +47,12 @@ func TestListingAssignments(t *testing.T) {
 	command.SetOut(actual)
 	command.SetErr(actual)
 	command.SetArgs([]string{
-		"assignments",
 		"-c1234",
 	})
 
 	err := command.Execute()
 	assert.NoError(t, err, "Should not error")
+
 	expected := "1 Assignment for Classroom over api\n\n" + 
 	"ID\tTitle\tSubmission Public\tType\tEditor\tInvitation Link\tAccepted\tSubmissions\tPassing\n" + 
 	"1\tNew assignment here\tfalse\tindividual\t\thttp://github.localhost/assignment-invitations/594b54b4dcffafea7d9671116e7ae8d4\t0\t0\t0\n"

@@ -91,13 +91,6 @@ func NewCmdAssignments() *cobra.Command {
 	return cmd
 }
 
-func colorForVisibility(public bool) string {
-	if public {
-		return "green"
-	}
-	return "red"
-}
-
 func assignmentListSummary(a classroom.AssignmentList, cs *iostreams.ColorScheme) string {
 	if a.Count == 0 {
 		return fmt.Sprintf("No assignments for %v\n", cs.Blue(a.Classroom.Name))
