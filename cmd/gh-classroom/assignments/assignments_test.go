@@ -11,6 +11,8 @@ import (
 func TestListingAssignments(t *testing.T) {
 	defer gock.Off()
 
+	t.Setenv("GITHUB_TOKEN", "999")
+
 	gock.New("https://api.github.com").
 		Get("/classrooms/1234/assignments").
 		MatchParam("page", "1").

@@ -10,6 +10,7 @@ import (
 
 func TestListingClassrooms(t *testing.T) {
 	defer gock.Off()
+	t.Setenv("GITHUB_TOKEN", "999")
 
 	gock.New("https://api.github.com"). 
 	Get("/classrooms").
