@@ -8,7 +8,7 @@ import (
 	"gopkg.in/h2non/gock.v1"
 )
 
-func TestOutputsHelpTestWithNoArgs(t *testing.T) {
+func TestListingAssignments(t *testing.T) {
 	defer gock.Off()
 
 	gock.New("https://api.github.com").

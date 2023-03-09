@@ -3,7 +3,6 @@ package list
 import (
 	"fmt"
 	"log"
-	"os"
 	"strconv"
 
 	"github.com/cli/cli/v2/pkg/iostreams"
@@ -11,15 +10,9 @@ import (
 	"github.com/cli/go-gh/pkg/browser"
 	"github.com/cli/go-gh/pkg/tableprinter"
 	"github.com/cli/go-gh/pkg/term"
+	"github.com/github/gh-classroom/pkg/classroom"
 	"github.com/spf13/cobra"
 )
-
-type Classroom struct {
-	Id       int    `json:"id"`
-	Name     string `json:"name"`
-	Archived bool   `json:"archived"`
-	Url      string `json:"url"`
-}
 
 func NewCmdList() *cobra.Command {
 	var web bool
@@ -40,19 +33,18 @@ func NewCmdList() *cobra.Command {
 				log.Fatal(err)
 			}
 
-			var response []Classroom
-			err = client.Get(fmt.Sprintf("classrooms?page=%v&per_page=%v", page, perPage), &response)
+			response, err := classroom.ListClassrooms(client, page, perPage)
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			fmt.Println("Classrooms")
+			fmt.Fprintln(cmd.OutOrStdout(),"Classrooms")
 
-			t := tableprinter.New(os.Stdout, true, 14)
+			t := tableprinter.New(cmd.OutOrStdout(), true, 14)
 
 			if web {
 				if term.IsTerminalOutput() {
-					fmt.Fprintln(io.ErrOut, "Opening in your browser.")
+					fmt.Fprintln(cmd.ErrOrStderr(), "Opening in your browser.")
 				}
 				browser := browser.New("", io.Out, io.ErrOut)
 				browser.Browse("https://classroom.github.com/classrooms")

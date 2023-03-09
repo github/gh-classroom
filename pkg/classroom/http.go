@@ -17,3 +17,14 @@ func ListAssignments(client api.RESTClient, classroomID int, page int, perPage i
 
 	return assignmentList, nil
 }
+
+func ListClassrooms(client api.RESTClient, page int, perPage int) ([]ShortClassroom, error) {
+	var response []ShortClassroom
+
+	err := client.Get(fmt.Sprintf("classrooms?page=%v&per_page=%v", page, perPage), &response)
+	if err != nil {
+		return nil, err
+	}
+
+	return response, nil
+}
