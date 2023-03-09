@@ -37,6 +37,6 @@ func NewCmdList() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().IntVarP(&opts.page, "page", "p", 1, "Search by page number.")
+	cmd.Flags().IntVar(&opts.page, "page", 1, "Search by page number.")
 	return cmd
 }
