@@ -6,8 +6,11 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/cli/cli/v2/pkg/iostreams"
 	"github.com/cli/go-gh"
+	"github.com/cli/go-gh/pkg/browser"
 	"github.com/cli/go-gh/pkg/tableprinter"
+	"github.com/cli/go-gh/pkg/term"
 	"github.com/spf13/cobra"
 )
 
@@ -29,6 +32,9 @@ func NewCmdList() *cobra.Command {
 		Long:    "List of Classrooms you own.",
 		Example: `$ gh classroom list --page 1`,
 		Run: func(cmd *cobra.Command, args []string) {
+			term := term.FromEnv()
+			io := iostreams.System()
+
 			client, err := gh.RESTClient(nil)
 			if err != nil {
 				log.Fatal(err)
@@ -41,7 +47,18 @@ func NewCmdList() *cobra.Command {
 			}
 
 			fmt.Println("Classrooms")
+
 			t := tableprinter.New(os.Stdout, true, 14)
+
+			if web {
+				if term.IsTerminalOutput() {
+					fmt.Fprintln(io.ErrOut, "Opening in your browser.")
+				}
+				browser := browser.New("", io.Out, io.ErrOut)
+				browser.Browse("https://classroom.github.com/classrooms")
+				return
+			}
+
 			t.AddField("ID", tableprinter.WithTruncate(nil))
 			t.AddField("Name", tableprinter.WithTruncate(nil))
 			t.AddField("Archived", tableprinter.WithTruncate(nil))
