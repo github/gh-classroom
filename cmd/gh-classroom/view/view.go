@@ -82,9 +82,9 @@ func PrintTable(response classroom.LongClassroom, t tableprinter.TablePrinter) {
 func OpenInBrowser(url string) {
 	term := term.FromEnv()
 	io := iostreams.System()
-
+	c := iostreams.NewColorScheme(true, true, true)
 	if term.IsTerminalOutput() {
-		fmt.Fprintln(io.ErrOut, "Opening classroom in your browser...")
+		fmt.Fprintln(io.ErrOut, c.Yellow("\nOpening classroom in your browser...\n"))
 	}
 	browser := browser.New("", io.Out, io.ErrOut)
 	browser.Browse(url)
