@@ -25,8 +25,7 @@ type Classroom struct {
 func NewCmdView(f *cmdutil.Factory) *cobra.Command {
 	var web bool
 	var classroomID int
-	term := term.FromEnv()
-	io := iostreams.System()
+
 	cmd := &cobra.Command{
 		Use:     "view",
 		Example: `$ gh classroom view -c 4876 --web`,
@@ -36,6 +35,8 @@ With "--web", open the classroom in a browser instead
 For more information about output formatting flags, see "gh help"`,
 		Run: func(cmd *cobra.Command, args []string) {
 			client, err := gh.RESTClient(nil)
+			response, err := classroom.GetClassroom(client, classroomID)
+
 			if classroomID == 0 {
 				log.Fatal("Missing classroom ID. Try again")
 			}
@@ -44,20 +45,14 @@ For more information about output formatting flags, see "gh help"`,
 				log.Fatal(err)
 			}
 
-			response, err := classroom.GetClassroom(client, classroomID)
+			if web {
+				OpenInBrowser(response.Url)
+			}
 
 			fmt.Println("CLASSROOM INFORMATION")
 			t := tableprinter.New(cmd.OutOrStdout(), true, 14)
 			PrintTable(response, t)
 
-			if web {
-				if term.IsTerminalOutput() {
-					fmt.Fprintln(io.ErrOut, "Opening classroom your browser...")
-				}
-				browser := browser.New("", io.Out, io.ErrOut)
-				browser.Browse(response.Url)
-				return
-			}
 		},
 	}
 
@@ -82,4 +77,14 @@ func PrintTable(response classroom.ShortClassroom, t tableprinter.TablePrinter) 
 	t.Render()
 }
 
+func OpenInBrowser(url string) {
+	term := term.FromEnv()
+	io := iostreams.System()
 
+	if term.IsTerminalOutput() {
+		fmt.Fprintln(io.ErrOut, "Opening classroom your browser...")
+	}
+	browser := browser.New("", io.Out, io.ErrOut)
+	browser.Browse(url)
+	return
+}
