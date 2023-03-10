@@ -28,3 +28,13 @@ func ListClassrooms(client api.RESTClient, page int, perPage int) ([]ShortClassr
 
 	return response, nil
 }
+
+func GetAssignment(client api.RESTClient, assignmentID int) (Assignment, error) {
+	var response Assignment
+	err := client.Get(fmt.Sprintf("assignments/%v", assignmentID), &response)
+	if err != nil {
+		return Assignment{}, err
+	}
+
+	return response, nil
+}

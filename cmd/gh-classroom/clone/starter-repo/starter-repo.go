@@ -22,14 +22,13 @@ func promptForClassroom(client api.RESTClient) (classroomId int, err error) {
 	}
 
 	optionMap := make(map[string]int)
-	options := make([]string, len(classrooms))
+	options := make([]string, 0, len(classrooms))
 
 	for _, classroom := range classrooms {
 		optionMap[classroom.Name] = classroom.Id
 		options = append(options, classroom.Name)
 	}
 
-	// Prompt user to select a classrooms
 	var qs = []*survey.Question{
 		{
 			Name: "classroom",
@@ -60,7 +59,7 @@ func promptForAssignment(client api.RESTClient, classroomId int) (assignmentId i
 	}
 
 	optionMap := make(map[string]int)
-	options := make([]string, len(assignmentList.Assignments))
+	options := make([]string, 0, len(assignmentList.Assignments))
 
 	for _, assignment := range assignmentList.Assignments {
 		optionMap[assignment.Title] = assignment.Id
@@ -104,8 +103,6 @@ func NewCmdStarterRepo() *cobra.Command {
 			}
 
 			if assignmentId == 0 {
-				fmt.Println("Fetching ")
-
 				classroomId, err := promptForClassroom(client)
 
 				if err != nil {
@@ -117,21 +114,24 @@ func NewCmdStarterRepo() *cobra.Command {
 				if err != nil {
 					log.Fatal(err)
 				}
-				fmt.Print("Assignment ID:")
-				fmt.Println(assignmentId)
-				fmt.Println("WOOOOOO")
 
-				// Fetch list of assignments for that classroom
-				// Prompt user to select an assignment
-				// Fetch the starter code for that assignment
-				// Clone the starter code into the current directory
-			} else {
-				// Fetch the starter code for that assignment
-				// Clone the starter code into the current directory
+			}
+			assignment, err := classroom.GetAssignment(client, assignmentId)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			fmt.Println(assignment.StarterCodeRepository.FullName)
+
+			if directory == "" {
+				// verify directory exists
+				// verify directory is empty
+				// clone into directory
+
 			}
 		},
 	}
 	cmd.Flags().IntVarP(&assignmentId, "assignment-id", "a", 0, "ID of the assignment")
-	cmd.Flags().StringVarP(&directory, "directory", "d", "", "Directory to clone into")
+	cmd.Flags().StringVarP(&directory, "directory", "d", ".", "Directory to clone into")
 	return cmd
 }

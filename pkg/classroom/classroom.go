@@ -29,6 +29,7 @@ type Assignment struct {
 	Passing                     int            `json:"passing"`
 	Language                    string         `json:"language"`
 	Classroom                   ShortClassroom `json:"classroom"`
+	StarterCodeRepository			  GithubRepository `json:"starter_code_repository"`
 }
 
 type ShortClassroom struct {
@@ -36,6 +37,15 @@ type ShortClassroom struct {
 	Name     string `json:"name"`
 	Archived bool   `json:"archived"`
 	Url      string `json:"url"`
+}
+
+type GithubRepository struct {
+	Id int `json:"id"`
+	FullName string `json:"full_name"`
+	HtmlUrl string `json:"html_url"`
+	NodeId string `json:"node_id"`
+	Private bool `json:"private"`
+	DefaultBranch string `json:"default_branch"`
 }
 
 func NewAssignmentList(assignments []Assignment) AssignmentList {
