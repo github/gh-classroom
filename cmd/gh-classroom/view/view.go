@@ -47,6 +47,7 @@ For more information about output formatting flags, see "gh help"`,
 
 			if web {
 				OpenInBrowser(response.Url)
+				return
 			}
 
 			fmt.Println("CLASSROOM INFORMATION")
@@ -82,7 +83,7 @@ func OpenInBrowser(url string) {
 	io := iostreams.System()
 
 	if term.IsTerminalOutput() {
-		fmt.Fprintln(io.ErrOut, "Opening classroom your browser...")
+		fmt.Fprintln(io.ErrOut, "Opening classroom in your browser...")
 	}
 	browser := browser.New("", io.Out, io.ErrOut)
 	browser.Browse(url)
