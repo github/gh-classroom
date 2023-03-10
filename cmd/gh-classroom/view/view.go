@@ -13,6 +13,7 @@ import (
 	"github.com/spf13/cobra"
 	"log"
 	"strconv"
+
 )
 
 type Classroom struct {
@@ -35,11 +36,10 @@ With "--web", open the classroom in a browser instead
 For more information about output formatting flags, see "gh help"`,
 		Run: func(cmd *cobra.Command, args []string) {
 			client, err := gh.RESTClient(nil)
-			response, err := classroom.GetClassroom(client, classroomID)
-
-			if classroomID == 0 {
-				log.Fatal("Missing classroom ID. Try again")
+			if len(args) != 0 {
+				classroomID, err = strconv.Atoi(args[0]) //allows user to input classroom ID as an argument or flag
 			}
+			response, err := classroom.GetClassroom(client, classroomID)
 
 			if err != nil {
 				log.Fatal(err)
@@ -50,10 +50,11 @@ For more information about output formatting flags, see "gh help"`,
 				return
 			}
 
-			fmt.Println("CLASSROOM INFORMATION")
-			t := tableprinter.New(cmd.OutOrStdout(), true, 14)
-			PrintTable(response, t)
-
+			fmt.Println()
+			PrintClassroom(response)
+			fmt.Println()
+			PrintOrganizationInfo(response.Organization)		
+			return
 		},
 	}
 
@@ -87,5 +88,27 @@ func OpenInBrowser(url string) {
 	}
 	browser := browser.New("", io.Out, io.ErrOut)
 	browser.Browse(url)
+	return
+}
+
+func PrintClassroom(response classroom.LongClassroom) {
+	c := iostreams.NewColorScheme(true, true, true)
+	fmt.Println(c.Blue("CLASSROOM INFORMATION"))
+	fmt.Println(c.Yellow("ID:"), c.Green(strconv.Itoa(response.Id)))
+	fmt.Println(c.Yellow("Name:"), c.Green(response.Name))
+	fmt.Println(c.Yellow("Archived:"), c.Green(strconv.FormatBool(response.Archived)))
+	fmt.Println(c.Yellow("URL:"), c.Green(response.Url))
+	return
+}
+
+func PrintOrganizationInfo(organization classroom.GitHubOrganizationInfo){
+	c := iostreams.NewColorScheme(true, true, true)
+	fmt.Println(c.Blue("GITHUB INFORMATION"))
+	fmt.Println(c.Yellow("GitHub Organization ID:"), c.Green(strconv.Itoa(organization.Id)))
+	fmt.Println(c.Yellow("Login:"), c.Green(organization.Login))
+	fmt.Println(c.Yellow("Node_ID:"), c.Green(organization.NodeID))
+	fmt.Println(c.Yellow("Html_Url:"), c.Green(organization.HtmlUrl))
+	fmt.Println(c.Yellow("Name:"), c.Green(organization.Name))
+	fmt.Println(c.Yellow("Avatar URL:"), c.Green(organization.AvatarUrl))
 	return
 }

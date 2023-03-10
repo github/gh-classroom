@@ -86,8 +86,8 @@ type GitHubOrganizationInfo struct {
 	Login        string `json:"login"`
 	NodeID 		 string   `json:"node_id"`
 	HtmlUrl      string `json:"html_url"`
-	Name 	   string `json:"name"`
-	AvatarUrl	string `json:"avatar_url"`
+	Name 	   	 string `json:"name"`
+	AvatarUrl	 string `json:"avatar_url"`
 }
 
 func NewAssignmentList(assignments []Assignment) AssignmentList {
