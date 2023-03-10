@@ -62,7 +62,7 @@ For more information about output formatting flags, see "gh help"`,
 	return cmd
 }
 
-func PrintTable(response classroom.ShortClassroom, t tableprinter.TablePrinter) {
+func PrintTable(response classroom.LongClassroom, t tableprinter.TablePrinter) {
 	t.AddField("ID", tableprinter.WithTruncate(nil))
 	t.AddField("Name", tableprinter.WithTruncate(nil))
 	t.AddField("Archived", tableprinter.WithTruncate(nil))

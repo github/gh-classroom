@@ -51,12 +51,12 @@ func GetAssignment(client api.RESTClient, assignmentID int) (Assignment, error) 
 	return response, nil
 }
 
-func GetClassroom(client api.RESTClient, classroomID int) (ShortClassroom, error) {
-	var response ShortClassroom
+func GetClassroom(client api.RESTClient, classroomID int) (LongClassroom, error) {
+	var response LongClassroom
 
 	err := client.Get(fmt.Sprintf("classrooms/%v", classroomID), &response)
 	if err != nil {
-		return ShortClassroom{}, err
+		return LongClassroom{}, err
 	}
 
 	return response, nil

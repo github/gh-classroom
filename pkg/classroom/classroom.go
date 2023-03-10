@@ -73,6 +73,23 @@ type AcceptedAssignmentList struct {
 	Count               int
 }
 
+type LongClassroom struct {
+	Id       int    `json:"id"`
+	Name     string `json:"name"`
+	Archived bool   `json:"archived"`
+	Url      string `json:"url"`
+	Organization GitHubOrganizationInfo `json:"organization"`
+}
+
+type GitHubOrganizationInfo struct {
+	Id           int    `json:"id"`
+	Login        string `json:"login"`
+	NodeID 		 string   `json:"node_id"`
+	HtmlUrl      string `json:"html_url"`
+	Name 	   string `json:"name"`
+	AvatarUrl	string `json:"avatar_url"`
+}
+
 func NewAssignmentList(assignments []Assignment) AssignmentList {
 	classroom := assignments[0].Classroom
 	count := len(assignments)
