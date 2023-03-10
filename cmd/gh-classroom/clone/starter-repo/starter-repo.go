@@ -8,13 +8,14 @@ import (
 	"strings"
 
 	"github.com/MakeNowJust/heredoc"
+	"github.com/cli/cli/v2/pkg/cmdutil"
 	"github.com/cli/go-gh"
 	"github.com/github/gh-classroom/cmd/gh-classroom/shared"
 	"github.com/github/gh-classroom/pkg/classroom"
 	"github.com/spf13/cobra"
 )
 
-func NewCmdStarterRepo() *cobra.Command {
+func NewCmdStarterRepo(f *cmdutil.Factory) *cobra.Command {
 	var assignmentId int
 	var directory string
 

@@ -2,10 +2,12 @@ package accepted
 
 import (
 	"fmt"
+
+	"github.com/cli/cli/v2/pkg/cmdutil"
 	"github.com/spf13/cobra"
 )
 
-func NewCmdAcceptedAssignments() *cobra.Command {
+func NewCmdAcceptedAssignments(f *cmdutil.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "accepted-assignments",
 		Short: "List your student's accepted assignments",
