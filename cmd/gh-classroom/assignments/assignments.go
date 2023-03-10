@@ -37,7 +37,8 @@ func NewCmdAssignments() *cobra.Command {
 			}
 
 			if classroomId == 0 {
-				classroomId, err = shared.PromptForClassroom(client)
+				cr, err := shared.PromptForClassroom(client)
+				classroomId = cr.Id
 
 				if err != nil {
 					log.Fatal(err)
