@@ -2,14 +2,15 @@ package assignment
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/cli/cli/v2/pkg/cmdutil"
 	"github.com/spf13/cobra"
 	"log"
-
+	"github.com/cli/cli/v2/pkg/iostreams"
+	"github.com/github/gh-classroom/pkg/classroom"
 	"github.com/cli/go-gh"
 )
-
 
 type Assignment struct {
 	Id                          int    `json:"id"`
@@ -28,13 +29,13 @@ type Assignment struct {
 	Submissions                 int    `json:"submissions"`
 	Passing                     int    `json:"passing"`
 	Language                    string `json:"language"`
-	//Classroom                   ShortClassroom `json:"classroom"`
+	//Classroom                   Classroom `json:"classroom"`
 }
 
 func NewCmdAssignment(f *cmdutil.Factory) *cobra.Command {
 	var (
 		web          bool
-		assignmentID int
+		assignmentId int
 		response     Assignment
 	)
 
@@ -45,26 +46,48 @@ func NewCmdAssignment(f *cmdutil.Factory) *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("Show Assignment")
 
-			if assignmentID == 0 {
-				log.Fatal("No assignment ID provided")
+			if len(args) != 0 {
+				assignmentId, err = strconv.Atoi(args[0])
+			}
+
+			if assignmentId == 0 {
+				log.Fatal("Assignment ID is required")
+			}
+
+			if web {
+				if term.isTerminalOutput() { fmt.Println(io.ErrOut, "Opening assignment in a web browser")
+				}
+				// figure out how to format the url to open in the browser
+				browser := browser.New("")
 			}
 
 			client, err := gh.RESTClient(nil)
+			response, err := classroom.GetAssignment(client, assignmentId)
 
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			err = client.Get(fmt.Sprintf("assignments/%d", assignmentID), &response)
-
-			if err != nil {
-				log.Fatal(err)
-			}
+			fmt.Println()
+			PrintAssigment(response)
+			fmt.Println()
 		},
 	}
 
 	cmd.Flags().BoolVar(&web, "web", false, "Open specified assignment in a web browser")
-	cmd.Flags().IntVar(&assignmentID, "assignment-id", 0, "Assignment ID (required)")
+	cmd.Flags().IntVar(&assignmentId, "assignment-id", 0, "Assignment ID (required)")
 
 	return cmd
 }
+
+func PrintAssigment(response classroom.Assignment) {
+	c := iostreams.NewColorScheme(true, true, true)
+	fmt.Println(c.Blue("ASSIGNMENT INFORMATION"))
+	fmt.Println(c.Yellow("ID:"), c.Green(strconv).Itoa(response.Id)))
+	fmt.Println(c.Yellow("Title:"), c.Green(response.Title))
+	fmt.Println(c.Yellow("Invite Link:"), c.Green(response.InviteLink))
+	fmt.Println(c.Yellow("Accepted:"), c.Green(strconv.Itoa(response.Accepted)))
+	fmt.Println(c.Yellow("Submissions:"), c.Green(strconv.Itoa(response.Submissions)))
+	fmt.Println(c.Yellow("Passing:"), c.Green(strconv.Itoa(response.Passing)))
+}
+
