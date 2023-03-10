@@ -33,7 +33,7 @@ func TestListingClassrooms(t *testing.T) {
 	err := command.Execute()
 	assert.NoError(t, err, "Should not error")
 
-	expected := "Classrooms\nID  Name                Archived  URL\n1   Classroom over api  false     https://classroom.github.com/classrooms/146-classroom-over-api\n"
+	expected := "1 Classroom\n\nID  Name                URL\n1   Classroom over api  https://classroom.github.com/classrooms/146-classroom-over-api\n"
 
 	assert.Equal(t, expected, actual.String(), "Actual output should match expected output")
 }
