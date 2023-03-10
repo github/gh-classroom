@@ -10,6 +10,7 @@ import (
     "github.com/cli/go-gh/pkg/term"
 	"github.com/cli/go-gh/pkg/browser"
 	"github.com/cli/cli/v2/pkg/iostreams"
+	"github.com/github/gh-classroom/pkg/classroom"
 	// "github.com/cli/go-gh/pkg/tableprinter"
 	// "github.com/spf13/cobra"
 )
@@ -43,19 +44,19 @@ For more information about output formatting flags, see "gh help"`,
 				log.Fatal(err)
 			}
 
+			response, err := classroom.GetClassroom(client, classroomID)
 
-
-			var response []Classroom
-			err = client.Get(fmt.Sprintf("classrooms/%v", classroomID), &response)
+			
+			// err = client.Get(fmt.Sprintf("classrooms/%v", classroomID), &response)
 
 			fmt.Println("Classroom View")
-
+		
 			if web {
 				if term.IsTerminalOutput() {
 					fmt.Fprintln(io.ErrOut, "Opening classroom your browser...")
 				}
 				browser := browser.New("", io.Out, io.ErrOut)
-				browser.Browse("https://classroom.github.com/classrooms/") //TODO: Update this to the actual classroom URL
+				browser.Browse(response.Url)
 				return
 			}
 		},
