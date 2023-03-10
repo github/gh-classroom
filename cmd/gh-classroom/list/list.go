@@ -10,6 +10,7 @@ import (
 	"github.com/cli/go-gh/pkg/browser"
 	"github.com/cli/go-gh/pkg/tableprinter"
 	"github.com/cli/go-gh/pkg/term"
+	"github.com/cli/go-gh/pkg/text"
 	"github.com/github/gh-classroom/pkg/classroom"
 	"github.com/spf13/cobra"
 )
@@ -27,6 +28,7 @@ func NewCmdList() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			term := term.FromEnv()
 			io := iostreams.System()
+			cs := io.ColorScheme()
 
 			client, err := gh.RESTClient(nil)
 			if err != nil {
@@ -38,7 +40,12 @@ func NewCmdList() *cobra.Command {
 				log.Fatal(err)
 			}
 
-			fmt.Fprintln(cmd.OutOrStdout(),"Classrooms")
+			count := len(response)
+			if count == 0 {
+				fmt.Fprintln(cmd.OutOrStderr(), "No classrooms found")
+			} else {
+				fmt.Fprintln(cmd.OutOrStderr(), fmt.Sprintf("%v\n", text.Pluralize(count, "Classroom")))
+			}
 
 			t := tableprinter.New(cmd.OutOrStdout(), true, 14)
 
@@ -57,9 +64,9 @@ func NewCmdList() *cobra.Command {
 			t.AddField("URL", tableprinter.WithTruncate(nil))
 			t.EndRow()
 			for _, classroom := range response {
-				t.AddField(strconv.Itoa(classroom.Id), tableprinter.WithTruncate(nil))
+				t.AddField(cs.Green(strconv.Itoa(classroom.Id)), tableprinter.WithTruncate(nil))
 				t.AddField(classroom.Name, tableprinter.WithTruncate(nil))
-				t.AddField(strconv.FormatBool(classroom.Archived))
+				t.AddField(cs.Gray(strconv.FormatBool(classroom.Archived)))
 				t.AddField(classroom.Url, tableprinter.WithTruncate(nil))
 				t.EndRow()
 			}
