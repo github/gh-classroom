@@ -7,8 +7,9 @@ import (
 	"github.com/cli/cli/v2/pkg/cmdutil"
 	"github.com/spf13/cobra"
 	"log"
+	"strconv"
 	"github.com/cli/cli/v2/pkg/iostreams"
-	"github.com/github/gh-classroom/pkg/classroom"
+	//"github.com/github/gh-classroom/pkg/classroom"
 	"github.com/cli/go-gh"
 )
 
@@ -47,7 +48,7 @@ func NewCmdAssignment(f *cmdutil.Factory) *cobra.Command {
 			fmt.Println("Show Assignment")
 
 			if len(args) != 0 {
-				assignmentId, err = strconv.Atoi(args[0])
+				assignmentId, error = strconv.Atoi(args[0])
 			}
 
 			if assignmentId == 0 {
