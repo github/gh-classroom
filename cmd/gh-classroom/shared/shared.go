@@ -1,0 +1,85 @@
+package shared
+
+import (
+	"github.com/AlecAivazis/survey/v2"
+	"github.com/cli/go-gh/pkg/api"
+	"github.com/github/gh-classroom/pkg/classroom"
+)
+
+func PromptForClassroom(client api.RESTClient) (classroomId int, err error) {
+	if err != nil {
+		return 0, err
+	}
+
+	classrooms, err := classroom.ListClassrooms(client, 1, 100)
+	if err != nil {
+		return 0, err
+	}
+
+	optionMap := make(map[string]int)
+	options := make([]string, 0, len(classrooms))
+
+	for _, classroom := range classrooms {
+		optionMap[classroom.Name] = classroom.Id
+		options = append(options, classroom.Name)
+	}
+
+	var qs = []*survey.Question{
+		{
+			Name: "classroom",
+			Prompt: &survey.Select{
+				Message: "Select a classroom:",
+				Options: options,
+			},
+		},
+	}
+
+	answer := struct {
+		Classroom string
+	}{}
+
+	err = survey.Ask(qs, &answer)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return optionMap[answer.Classroom], nil
+}
+
+func PromptForAssignment(client api.RESTClient, classroomId int) (assignmentId int, err error) {
+	assignmentList, err := classroom.ListAssignments(client, classroomId, 1, 100)
+	if err != nil {
+		return 0, err
+	}
+
+	optionMap := make(map[string]int)
+	options := make([]string, 0, len(assignmentList.Assignments))
+
+	for _, assignment := range assignmentList.Assignments {
+		optionMap[assignment.Title] = assignment.Id
+		options = append(options, assignment.Title)
+	}
+
+	var qs = []*survey.Question{
+		{
+			Name: "assignment",
+			Prompt: &survey.Select{
+				Message: "Select an assignment:",
+				Options: options,
+			},
+		},
+	}
+
+	answer := struct {
+		Assignment string
+	}{}
+
+	err = survey.Ask(qs, &answer)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return optionMap[answer.Assignment], nil
+}
