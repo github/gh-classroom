@@ -2,10 +2,12 @@ package assignment
 
 import (
 	"fmt"
+
+	"github.com/cli/cli/v2/pkg/cmdutil"
 	"github.com/spf13/cobra"
 )
 
-func NewCmdAssignment() *cobra.Command {
+func NewCmdAssignment(f *cmdutil.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "assignment",
 		Short: "List your assignments",

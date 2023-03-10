@@ -3,10 +3,11 @@ package student_repos
 import (
 	"fmt"
 
+	"github.com/cli/cli/v2/pkg/cmdutil"
 	"github.com/spf13/cobra"
 )
 
-func NewCmdStudentRepo() *cobra.Command {
+func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "student-repos",
 		Short: "Clone student repos for an assignment",

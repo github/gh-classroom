@@ -5,6 +5,7 @@ import (
 	"log"
 	"strconv"
 
+	"github.com/cli/cli/v2/pkg/cmdutil"
 	"github.com/cli/cli/v2/pkg/iostreams"
 	"github.com/cli/go-gh"
 	"github.com/cli/go-gh/pkg/browser"
@@ -15,7 +16,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCmdList() *cobra.Command {
+func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 	var web bool
 	var page int
 	var perPage int

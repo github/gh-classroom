@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"testing"
 
+	"github.com/cli/cli/v2/pkg/cmdutil"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v1"
 )
@@ -45,7 +46,8 @@ func TestListingAssignments(t *testing.T) {
 
 	actual := new(bytes.Buffer)
 
-	command := NewCmdAssignments()
+	f := &cmdutil.Factory{}
+	command := NewCmdAssignments(f)
 	command.SetOut(actual)
 	command.SetErr(actual)
 	command.SetArgs([]string{
@@ -55,9 +57,9 @@ func TestListingAssignments(t *testing.T) {
 	err := command.Execute()
 	assert.NoError(t, err, "Should not error")
 
-	expected := "1 Assignment for Classroom over api\n\n" + 
-	"ID\tTitle\tSubmission Public\tType\tEditor\tInvitation Link\tAccepted\tSubmissions\tPassing\n" + 
-	"1\tNew assignment here\tfalse\tindividual\t\thttp://github.localhost/assignment-invitations/594b54b4dcffafea7d9671116e7ae8d4\t0\t0\t0\n"
+	expected := "1 Assignment for Classroom over api\n\n" +
+		"ID\tTitle\tSubmission Public\tType\tEditor\tInvitation Link\tAccepted\tSubmissions\tPassing\n" +
+		"1\tNew assignment here\tfalse\tindividual\t\thttp://github.localhost/assignment-invitations/594b54b4dcffafea7d9671116e7ae8d4\t0\t0\t0\n"
 
 	assert.Equal(t, expected, actual.String(), "Actual output should match expected output")
 }

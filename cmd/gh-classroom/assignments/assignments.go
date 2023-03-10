@@ -5,21 +5,23 @@ import (
 	"log"
 	"strconv"
 
+	"github.com/cli/cli/v2/pkg/cmdutil"
 	"github.com/cli/cli/v2/pkg/iostreams"
 	"github.com/cli/go-gh"
 	"github.com/cli/go-gh/pkg/browser"
 	"github.com/cli/go-gh/pkg/tableprinter"
 	"github.com/cli/go-gh/pkg/term"
 	"github.com/cli/go-gh/pkg/text"
+	"github.com/github/gh-classroom/cmd/gh-classroom/shared"
 	"github.com/github/gh-classroom/pkg/classroom"
 	"github.com/spf13/cobra"
 )
 
-func NewCmdAssignments() *cobra.Command {
+func NewCmdAssignments(f *cmdutil.Factory) *cobra.Command {
 	var web bool
 	var page int
 	var perPage int
-	var classroomID int
+	var classroomId int
 
 	cmd := &cobra.Command{
 		Use:   "assignments",
@@ -30,16 +32,21 @@ func NewCmdAssignments() *cobra.Command {
 			io := iostreams.System()
 			cs := io.ColorScheme()
 
-			if classroomID == 0 {
-				log.Fatal("Missing classroom ID")
-			}
-
 			client, err := gh.RESTClient(nil)
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			assignmentList, err := classroom.ListAssignments(client, classroomID, page, perPage)
+			if classroomId == 0 {
+				cr, err := shared.PromptForClassroom(client)
+				classroomId = cr.Id
+
+				if err != nil {
+					log.Fatal(err)
+				}
+			}
+
+			assignmentList, err := classroom.ListAssignments(client, classroomId, page, perPage)
 
 			if err != nil {
 				log.Fatal(err)
@@ -53,7 +60,7 @@ func NewCmdAssignments() *cobra.Command {
 				if term.IsTerminalOutput() {
 					fmt.Fprintln(io.ErrOut, "Opening in your browser.")
 				}
-				browser := browser.New("", io.Out, io.ErrOut)
+				browser := browser.New("", cmd.OutOrStdout(), cmd.OutOrStderr())
 				browser.Browse(assignmentList.Url())
 				return
 			}
@@ -86,7 +93,7 @@ func NewCmdAssignments() *cobra.Command {
 	cmd.Flags().BoolVar(&web, "web", false, "Open the assignment list in a browser")
 	cmd.Flags().IntVar(&page, "page", 1, "Page number")
 	cmd.Flags().IntVar(&perPage, "per-page", 30, "Number of assignments per page")
-	cmd.Flags().IntVarP(&classroomID, "classroom-id", "c", 0, "ID of the classroom")
+	cmd.Flags().IntVarP(&classroomId, "classroom-id", "c", 0, "ID of the classroom")
 
 	return cmd
 }
