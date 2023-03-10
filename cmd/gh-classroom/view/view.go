@@ -96,7 +96,6 @@ func PrintClassroom(response classroom.LongClassroom) {
 	fmt.Println(c.Blue("CLASSROOM INFORMATION"))
 	fmt.Println(c.Yellow("ID:"), c.Green(strconv.Itoa(response.Id)))
 	fmt.Println(c.Yellow("Name:"), c.Green(response.Name))
-	fmt.Println(c.Yellow("Archived:"), c.Green(strconv.FormatBool(response.Archived)))
 	fmt.Println(c.Yellow("URL:"), c.Green(response.Url))
 	return
 }
