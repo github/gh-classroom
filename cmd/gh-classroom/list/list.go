@@ -60,13 +60,11 @@ func NewCmdList() *cobra.Command {
 
 			t.AddField("ID", tableprinter.WithTruncate(nil))
 			t.AddField("Name", tableprinter.WithTruncate(nil))
-			t.AddField("Archived", tableprinter.WithTruncate(nil))
 			t.AddField("URL", tableprinter.WithTruncate(nil))
 			t.EndRow()
 			for _, classroom := range response {
 				t.AddField(cs.Green(strconv.Itoa(classroom.Id)), tableprinter.WithTruncate(nil))
 				t.AddField(classroom.Name, tableprinter.WithTruncate(nil))
-				t.AddField(cs.Gray(strconv.FormatBool(classroom.Archived)))
 				t.AddField(classroom.Url, tableprinter.WithTruncate(nil))
 				t.EndRow()
 			}
