@@ -48,7 +48,6 @@ func NewCmdStarterRepo(f *cmdutil.Factory) *cobra.Command {
 				if err != nil {
 					log.Fatal(err)
 				}
-
 			}
 
 			assignment, err := classroom.GetAssignment(client, assignmentId)
@@ -56,13 +55,9 @@ func NewCmdStarterRepo(f *cmdutil.Factory) *cobra.Command {
 				log.Fatal(err)
 			}
 
-			fmt.Println(assignment.Id)
-
 			if assignment.StarterCodeRepository.FullName == "" {
 				fmt.Println("No starter code repository found for this assignment.")
 				return
-			} else {
-				fmt.Println(assignment.StarterCodeRepository.FullName)
 			}
 
 			if strings.HasPrefix(directory, "~") {
@@ -89,12 +84,11 @@ func NewCmdStarterRepo(f *cmdutil.Factory) *cobra.Command {
 			clonePath := fullPath + "/" + assignment.Slug
 			fmt.Printf("Cloning into: %v\n", clonePath)
 
-			stdOut, _, err := gh.Exec("repo", "clone", assignment.StarterCodeRepository.FullName, "--", clonePath)
+			_, _, err = gh.Exec("repo", "clone", assignment.StarterCodeRepository.FullName, "--", clonePath)
 			if err != nil {
 				log.Fatal(err)
 				return
 			}
-			fmt.Println(stdOut.String())
 		},
 	}
 	cmd.Flags().IntVarP(&assignmentId, "assignment-id", "a", 0, "ID of the assignment")
