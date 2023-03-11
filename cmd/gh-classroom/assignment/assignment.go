@@ -1,16 +1,16 @@
 package assignment
 
 import (
+	"log"
 	"fmt"
 	"strconv"
 
 	"github.com/cli/cli/v2/pkg/cmdutil"
 	"github.com/spf13/cobra"
-	"log"
-	"strconv"
 	"github.com/cli/cli/v2/pkg/iostreams"
-	//"github.com/github/gh-classroom/pkg/classroom"
 	"github.com/cli/go-gh"
+	"github.com/cli/go-gh/pkg/browser"
+	"github.com/github/gh-classroom/pkg/classroom"
 )
 
 type Assignment struct {
@@ -37,7 +37,6 @@ func NewCmdAssignment(f *cmdutil.Factory) *cobra.Command {
 	var (
 		web          bool
 		assignmentId int
-		response     Assignment
 	)
 
 	cmd := &cobra.Command{
@@ -45,6 +44,9 @@ func NewCmdAssignment(f *cmdutil.Factory) *cobra.Command {
 		Short: "Open an assignment",
 		Long:  "Open an specific assignment for a classroom",
 		Run: func(cmd *cobra.Command, args []string) {
+			term := term.FromEnv()
+			io := iostreams.System()
+
 			fmt.Println("Show Assignment")
 
 			if len(args) != 0 {
@@ -84,7 +86,7 @@ func NewCmdAssignment(f *cmdutil.Factory) *cobra.Command {
 func PrintAssigment(response classroom.Assignment) {
 	c := iostreams.NewColorScheme(true, true, true)
 	fmt.Println(c.Blue("ASSIGNMENT INFORMATION"))
-	fmt.Println(c.Yellow("ID:"), c.Green(strconv).Itoa(response.Id)))
+	fmt.Println(c.Yellow("ID:"), c.Green(strconv.Itoa(response.Id)))
 	fmt.Println(c.Yellow("Title:"), c.Green(response.Title))
 	fmt.Println(c.Yellow("Invite Link:"), c.Green(response.InviteLink))
 	fmt.Println(c.Yellow("Accepted:"), c.Green(strconv.Itoa(response.Accepted)))
