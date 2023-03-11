@@ -64,6 +64,9 @@ func NewCmdAcceptedAssignments(f *cmdutil.Factory) *cobra.Command {
 				log.Fatal(err)
 			}
 
+			fmt.Fprintf(cmd.OutOrStdout(), "Assignment: %v \n", acceptedAssignments.Assignment.Title)
+			fmt.Fprintf(cmd.OutOrStdout(), "ID: %v \n\n", acceptedAssignments.Assignment.Id)
+
 			t := tableprinter.New(cmd.OutOrStdout(), term.IsTerminalOutput(), 14)
 			t.AddField("ID", tableprinter.WithTruncate(nil))
 			t.AddField("Submitted", tableprinter.WithTruncate(nil))
