@@ -54,7 +54,6 @@ func NewCmdAssignments(f *cmdutil.Factory) *cobra.Command {
 
 			fmt.Fprintln(cmd.OutOrStderr(), assignmentListSummary(assignmentList, cs))
 
-			t := tableprinter.New(cmd.OutOrStdout(), term.IsTerminalOutput(), 14)
 
 			if web {
 				if term.IsTerminalOutput() {
@@ -64,6 +63,8 @@ func NewCmdAssignments(f *cmdutil.Factory) *cobra.Command {
 				browser.Browse(assignmentList.Url())
 				return
 			}
+
+			t := tableprinter.New(cmd.OutOrStdout(), term.IsTerminalOutput(), 14)
 			t.AddField("ID", tableprinter.WithTruncate(nil))
 			t.AddField("Title", tableprinter.WithTruncate(nil))
 			t.AddField("Submission Public", tableprinter.WithTruncate(nil))

@@ -59,7 +59,7 @@ type AcceptedAssignment struct {
 	Submitted              bool             `json:"submitted"`
 	Passing                bool             `json:"passing"`
 	CommitCount            int              `json:"commit_count"`
-//	Grade                  string           `json:"grade"`
+	Grade                  string           `json:"grade"`
 	FeedbackPullRequestUrl string           `json:"feedback_pull_request_url"`
 	Students               []Student        `json:"students"`
 	Repository             GithubRepository `json:"repository"`
@@ -103,4 +103,12 @@ func (a AssignmentList) Url() string {
 
 func (a Assignment) Url() string {
 	return fmt.Sprintf(a.Classroom.Url+"/assignments/%v", a.Slug)
+}
+
+func (a Assignment) IsGroupAssignment() bool {
+	return a.AssignmentType == "group"
+}
+
+func (a AcceptedAssignment) RepositoryUrl() string {
+	return a.Repository.HtmlUrl
 }
