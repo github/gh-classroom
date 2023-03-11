@@ -43,7 +43,8 @@ func NewCmdStarterRepo(f *cmdutil.Factory) *cobra.Command {
 					log.Fatal(err)
 				}
 
-				assignmentId, err = shared.PromptForAssignment(client, classroomId)
+				assignment, err := shared.PromptForAssignment(client, classroomId)
+				assignmentId = assignment.Id
 
 				if err != nil {
 					log.Fatal(err)

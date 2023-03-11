@@ -47,17 +47,17 @@ func PromptForClassroom(client api.RESTClient) (classroomId classroom.ShortClass
 	return optionMap[answer.Classroom], nil
 }
 
-func PromptForAssignment(client api.RESTClient, classroomId int) (assignmentId int, err error) {
+func PromptForAssignment(client api.RESTClient, classroomId int) (assignment classroom.Assignment, err error) {
 	assignmentList, err := classroom.ListAssignments(client, classroomId, 1, 100)
 	if err != nil {
-		return 0, err
+		return classroom.Assignment{}, err
 	}
 
-	optionMap := make(map[string]int)
+	optionMap := make(map[string]classroom.Assignment)
 	options := make([]string, 0, len(assignmentList.Assignments))
 
 	for _, assignment := range assignmentList.Assignments {
-		optionMap[assignment.Title] = assignment.Id
+		optionMap[assignment.Title] = assignment
 		options = append(options, assignment.Title)
 	}
 
@@ -78,7 +78,7 @@ func PromptForAssignment(client api.RESTClient, classroomId int) (assignmentId i
 	err = survey.Ask(qs, &answer)
 
 	if err != nil {
-		return 0, err
+		return classroom.Assignment{}, err
 	}
 
 	return optionMap[answer.Assignment], nil
