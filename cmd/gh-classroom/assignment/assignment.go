@@ -10,6 +10,7 @@ import (
 	"github.com/cli/cli/v2/pkg/iostreams"
 	"github.com/cli/go-gh"
 	"github.com/cli/go-gh/pkg/browser"
+	"github.com/cli/go-gh/pkg/term"
 	"github.com/github/gh-classroom/pkg/classroom"
 )
 
@@ -44,14 +45,12 @@ func NewCmdAssignment(f *cmdutil.Factory) *cobra.Command {
 		Short: "Open an assignment",
 		Long:  "Open an specific assignment for a classroom",
 		Run: func(cmd *cobra.Command, args []string) {
-			term := term.FromEnv()
-			io := iostreams.System()
+			c := iostreams.NewColorScheme(true, true, true)
 
-			fmt.Println("Show Assignment")
+			fmt.Println(c.Bold(c.Blue("Show Assignment")))
 
-			if len(args) != 0 {
-				assignmentId, error = strconv.Atoi(args[0])
-			}
+			client, err := gh.RESTClient(nil)
+			response, err := classroom.GetAssignment(client, assignmentId)
 
 			if assignmentId == 0 {
 				log.Fatal("Assignment ID is required")
@@ -69,6 +68,14 @@ func NewCmdAssignment(f *cmdutil.Factory) *cobra.Command {
 
 			if err != nil {
 				log.Fatal(err)
+			}
+
+			if web {
+				// // if term.isTerminalOutput() {
+				// // 	fmt.Println(io.ErrOut, "Opening assignment in a web browser")
+				// // }
+				// // figure out how to format the url to open in the browser
+				// browser := browser.New("")
 			}
 
 			fmt.Println()
