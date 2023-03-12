@@ -18,8 +18,8 @@ func ListAssignments(client api.RESTClient, classroomID int, page int, perPage i
 	return assignmentList, nil
 }
 
-func ListClassrooms(client api.RESTClient, page int, perPage int) ([]ShortClassroom, error) {
-	var response []ShortClassroom
+func ListClassrooms(client api.RESTClient, page int, perPage int) ([]Classroom, error) {
+	var response []Classroom
 
 	err := client.Get(fmt.Sprintf("classrooms?page=%v&per_page=%v", page, perPage), &response)
 	if err != nil {
@@ -51,12 +51,12 @@ func GetAssignment(client api.RESTClient, assignmentID int) (Assignment, error) 
 	return response, nil
 }
 
-func GetClassroom(client api.RESTClient, classroomID int) (LongClassroom, error) {
-	var response LongClassroom
+func GetClassroom(client api.RESTClient, classroomID int) (Classroom, error) {
+	var response Classroom
 
 	err := client.Get(fmt.Sprintf("classrooms/%v", classroomID), &response)
 	if err != nil {
-		return LongClassroom{}, err
+		return Classroom{}, err
 	}
 
 	return response, nil
