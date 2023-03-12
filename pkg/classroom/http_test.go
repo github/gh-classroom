@@ -9,6 +9,7 @@ import (
 )
 
 func TestListAssignments(t *testing.T) {
+	t.Setenv("GITHUB_TOKEN", "999")
 	defer gock.Off()
 
 	gock.New("https://api.github.com").
@@ -41,6 +42,7 @@ func TestListAssignments(t *testing.T) {
 }
 
 func TestListClassrooms(t *testing.T) {
+	t.Setenv("GITHUB_TOKEN", "999")
 	defer gock.Off()
 
 	gock.New("https://api.github.com").
@@ -66,6 +68,7 @@ func TestListClassrooms(t *testing.T) {
 }
 
 func TestListAcceptedAssignments(t *testing.T) {
+	t.Setenv("GITHUB_TOKEN", "999")
 	defer gock.Off()
 
 	gock.New("https://api.github.com").
@@ -114,6 +117,7 @@ func TestListAcceptedAssignments(t *testing.T) {
 }
 
 func TestGetAssignment(t *testing.T) {
+	t.Setenv("GITHUB_TOKEN", "999")
 	defer gock.Off()
 
 	gock.New("https://api.github.com").
@@ -151,6 +155,7 @@ func TestGetAssignment(t *testing.T) {
 }
 
 func TestGetClassroom(t *testing.T) {
+	t.Setenv("GITHUB_TOKEN", "999")
 	defer gock.Off()
 
 	gock.New("https://api.github.com").
