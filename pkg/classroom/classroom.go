@@ -36,7 +36,7 @@ type Classroom struct {
 	Name         string                 `json:"name"`
 	Archived     bool                   `json:"archived"`
 	Url          string                 `json:"url"`
-	Organization GitHubOrganizationInfo `json:"organization"`
+	Organization GitHubOrganization `json:"organization"`
 }
 
 type GithubRepository struct {
@@ -74,7 +74,7 @@ type AcceptedAssignmentList struct {
 	Count               int
 }
 
-type GitHubOrganizationInfo struct {
+type GitHubOrganization struct {
 	Id        int    `json:"id"`
 	Login     string `json:"login"`
 	NodeID    string `json:"node_id"`

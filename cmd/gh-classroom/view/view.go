@@ -3,7 +3,6 @@ package view
 import (
 	"fmt"
 	"log"
-	"strconv"
 
 	"github.com/cli/cli/v2/pkg/cmdutil"
 	"github.com/cli/cli/v2/pkg/iostreams"
@@ -49,10 +48,8 @@ For more information about output formatting flags, see "gh help"`,
 				return
 			}
 
-			fmt.Println()
-			PrintClassroom(response)
-			fmt.Println()
-			PrintOrganizationInfo(response.Organization)
+			RenderModel(response, cmd.OutOrStdout())
+
 			return
 		},
 	}
@@ -74,19 +71,3 @@ func OpenInBrowser(url string) {
 	return
 }
 
-func PrintClassroom(response classroom.Classroom) {
-	c := iostreams.NewColorScheme(true, true, true)
-	fmt.Println(c.Blue("CLASSROOM INFORMATION"))
-	fmt.Println(c.Yellow("ID:"), c.Green(strconv.Itoa(response.Id)))
-	fmt.Println(c.Yellow("Name:"), c.Green(response.Name))
-	fmt.Println(c.Yellow("URL:"), c.Green(response.Url))
-	return
-}
-
-func PrintOrganizationInfo(organization classroom.GitHubOrganizationInfo) {
-	c := iostreams.NewColorScheme(true, true, true)
-	fmt.Println(c.Blue("GITHUB INFORMATION"))
-	fmt.Println(c.Yellow("Login:"), c.Green(organization.Login))
-	fmt.Println(c.Yellow("Organization URL"), c.Green(organization.HtmlUrl))
-	return
-}
