@@ -29,6 +29,18 @@ func ListClassrooms(client api.RESTClient, page int, perPage int) ([]ShortClassr
 	return response, nil
 }
 
+func ListAcceptedAssignments(client api.RESTClient, assignmentID int, page int, perPage int) (AcceptedAssignmentList, error) {
+  var response []AcceptedAssignment
+	err := client.Get(fmt.Sprintf("assignments/%v/accepted_assignments?page=%v&per_page=%v", assignmentID, page, perPage), &response)
+	if err != nil {
+		return AcceptedAssignmentList{}, err
+	}
+
+	acceptedAssignmentList := NewAcceptedAssignmentList(response)
+
+	return acceptedAssignmentList, nil
+}
+
 func GetAssignment(client api.RESTClient, assignmentID int) (Assignment, error) {
 	var response Assignment
 	err := client.Get(fmt.Sprintf("assignments/%v", assignmentID), &response)
@@ -38,3 +50,4 @@ func GetAssignment(client api.RESTClient, assignmentID int) (Assignment, error) 
 
 	return response, nil
 }
+

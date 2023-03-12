@@ -47,6 +47,32 @@ type GithubRepository struct {
 	DefaultBranch string `json:"default_branch"`
 }
 
+type Student struct {
+	Id        int    `json:"id"`
+	Login     string `json:"login"`
+	AvatarUrl string `json:"avatar_url"`
+	HtmlUrl   string `json:"html_url"`
+}
+
+type AcceptedAssignment struct {
+	Id                     int              `json:"id"`
+	Submitted              bool             `json:"submitted"`
+	Passing                bool             `json:"passing"`
+	CommitCount            int              `json:"commit_count"`
+	Grade                  string           `json:"grade"`
+	FeedbackPullRequestUrl string           `json:"feedback_pull_request_url"`
+	Students               []Student        `json:"students"`
+	Repository             GithubRepository `json:"repository"`
+	Assignment             Assignment       `json:"assignment"`
+}
+
+type AcceptedAssignmentList struct {
+	AcceptedAssignments []AcceptedAssignment
+	Classroom           ShortClassroom
+	Assignment          Assignment
+	Count               int
+}
+
 func NewAssignmentList(assignments []Assignment) AssignmentList {
 	classroom := assignments[0].Classroom
 	count := len(assignments)
@@ -58,10 +84,31 @@ func NewAssignmentList(assignments []Assignment) AssignmentList {
 	}
 }
 
+func NewAcceptedAssignmentList(assignments []AcceptedAssignment) AcceptedAssignmentList {
+	classroom := assignments[0].Assignment.Classroom
+	assignment := assignments[0].Assignment
+	count := len(assignments)
+
+	return AcceptedAssignmentList{
+		AcceptedAssignments: assignments,
+		Classroom:           classroom,
+		Assignment:          assignment,
+		Count:               count,
+	}
+}
+
 func (a AssignmentList) Url() string {
 	return fmt.Sprintf(a.Classroom.Url)
 }
 
 func (a Assignment) Url() string {
 	return fmt.Sprintf(a.Classroom.Url+"/assignments/%v", a.Slug)
+}
+
+func (a Assignment) IsGroupAssignment() bool {
+	return a.AssignmentType == "group"
+}
+
+func (a AcceptedAssignment) RepositoryUrl() string {
+	return a.Repository.HtmlUrl
 }
