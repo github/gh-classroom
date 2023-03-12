@@ -10,12 +10,12 @@ import (
 
 func TestPrintingOutput(t *testing.T) {
 	model := classroom.Classroom{
-		Id:          1,
-		Name:        "My Classroom",
-		Url:         "https://classroom.github.com/my-classroom",
+		Id:   1,
+		Name: "My Classroom",
+		Url:  "https://classroom.github.com/my-classroom",
 		Organization: classroom.GitHubOrganization{
-			Login: "org-login",
-			HtmlUrl:  "https://github.com/github-org",
+			Login:   "org-login",
+			HtmlUrl: "https://github.com/github-org",
 		},
 	}
 	actual := &bytes.Buffer{}

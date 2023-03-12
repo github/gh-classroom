@@ -1,11 +1,11 @@
 package view
 
-import  (
+import (
 	"fmt"
+	"github.com/cli/cli/v2/pkg/iostreams"
+	"github.com/github/gh-classroom/pkg/classroom"
 	"io"
 	"strconv"
-	"github.com/github/gh-classroom/pkg/classroom"
-	"github.com/cli/cli/v2/pkg/iostreams"
 )
 
 func RenderModel(model classroom.Classroom, stdout io.Writer) {

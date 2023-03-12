@@ -32,10 +32,10 @@ type Assignment struct {
 }
 
 type Classroom struct {
-	Id           int                    `json:"id"`
-	Name         string                 `json:"name"`
-	Archived     bool                   `json:"archived"`
-	Url          string                 `json:"url"`
+	Id           int                `json:"id"`
+	Name         string             `json:"name"`
+	Archived     bool               `json:"archived"`
+	Url          string             `json:"url"`
 	Organization GitHubOrganization `json:"organization"`
 }
 

@@ -70,4 +70,3 @@ func OpenInBrowser(url string) {
 	browser.Browse(url)
 	return
 }
-
