@@ -23,13 +23,13 @@ func NewCmdView(f *cmdutil.Factory) *cobra.Command {
 		Example: `$ gh classroom view -c 4876 --web`,
 		Short:   "Show the details of a Classroom",
 		Long: `Display the classroom ID, classroom slug, title and other information about a classroom.
-With "--web", open the classroom in a browser instead
-For more information about output formatting flags, see "gh help"`,
+With "--web", open the classroom in a browser instead.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			client, err := gh.RESTClient(nil)
 
 			if err != nil {
 				log.Fatal(err)
+				return
 			}
 
 			if classroomId == 0 {
@@ -38,6 +38,7 @@ For more information about output formatting flags, see "gh help"`,
 
 				if err != nil {
 					log.Fatal(err)
+					return
 				}
 			}
 
