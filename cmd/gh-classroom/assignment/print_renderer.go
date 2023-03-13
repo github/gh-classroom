@@ -3,11 +3,9 @@ package assignment
 import (
 	"fmt"
 	"io"
-	"log"
 	"strconv"
 
 	"github.com/cli/cli/v2/pkg/iostreams"
-	"github.com/cli/go-gh"
 	"github.com/github/gh-classroom/pkg/classroom"
 )
 
@@ -38,12 +36,4 @@ func printAssigment(assignment classroom.Assignment, out io.Writer) {
 	fmt.Fprintln(out, c.Yellow("Accepted:"), c.Green(strconv.Itoa(assignment.Accepted)))
 	fmt.Fprintln(out, c.Yellow("Submissions:"), c.Green(strconv.Itoa(assignment.Submissions)))
 	fmt.Fprintln(out, c.Yellow("Passing:"), c.Green(strconv.Itoa(assignment.Passing)))
-
-	stdOut, _, err := gh.Exec("repo", "view", assignment.StarterCodeRepository.FullName)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(stdOut.String())
 }
