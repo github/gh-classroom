@@ -26,6 +26,7 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 		Short:   "List Classrooms",
 		Long:    "List of Classrooms you own.",
 		Example: `$ gh classroom list --page 1`,
+		Aliases: []string{"ls"},
 		Run: func(cmd *cobra.Command, args []string) {
 			term := term.FromEnv()
 			io := iostreams.System()
@@ -42,6 +43,7 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 			}
 
 			count := len(response)
+
 			if count == 0 {
 				fmt.Fprintln(cmd.OutOrStderr(), "No classrooms found")
 			} else {
