@@ -54,7 +54,6 @@ func NewCmdAssignments(f *cmdutil.Factory) *cobra.Command {
 
 			fmt.Fprintln(cmd.OutOrStderr(), assignmentListSummary(assignmentList, cs))
 
-
 			if web {
 				if term.IsTerminalOutput() {
 					fmt.Fprintln(io.ErrOut, "Opening in your browser.")

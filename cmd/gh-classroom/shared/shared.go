@@ -6,17 +6,17 @@ import (
 	"github.com/github/gh-classroom/pkg/classroom"
 )
 
-func PromptForClassroom(client api.RESTClient) (classroomId classroom.ShortClassroom, err error) {
+func PromptForClassroom(client api.RESTClient) (classroomId classroom.Classroom, err error) {
 	if err != nil {
-		return classroom.ShortClassroom{}, err
+		return classroom.Classroom{}, err
 	}
 
 	classrooms, err := classroom.ListClassrooms(client, 1, 100)
 	if err != nil {
-		return classroom.ShortClassroom{}, err
+		return classroom.Classroom{}, err
 	}
 
-	optionMap := make(map[string]classroom.ShortClassroom)
+	optionMap := make(map[string]classroom.Classroom)
 	options := make([]string, 0, len(classrooms))
 
 	for _, classroom := range classrooms {
@@ -41,7 +41,7 @@ func PromptForClassroom(client api.RESTClient) (classroomId classroom.ShortClass
 	err = survey.Ask(qs, &answer)
 
 	if err != nil {
-		return classroom.ShortClassroom{}, err
+		return classroom.Classroom{}, err
 	}
 
 	return optionMap[answer.Classroom], nil

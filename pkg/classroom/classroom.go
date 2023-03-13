@@ -6,7 +6,7 @@ import (
 
 type AssignmentList struct {
 	Assignments []Assignment
-	Classroom   ShortClassroom
+	Classroom   Classroom
 	Count       int
 }
 
@@ -27,15 +27,16 @@ type Assignment struct {
 	Submissions                 int              `json:"submissions"`
 	Passing                     int              `json:"passing"`
 	Language                    string           `json:"language"`
-	Classroom                   ShortClassroom   `json:"classroom"`
+	Classroom                   Classroom        `json:"classroom"`
 	StarterCodeRepository       GithubRepository `json:"starter_code_repository"`
 }
 
-type ShortClassroom struct {
-	Id       int    `json:"id"`
-	Name     string `json:"name"`
-	Archived bool   `json:"archived"`
-	Url      string `json:"url"`
+type Classroom struct {
+	Id           int                `json:"id"`
+	Name         string             `json:"name"`
+	Archived     bool               `json:"archived"`
+	Url          string             `json:"url"`
+	Organization GitHubOrganization `json:"organization"`
 }
 
 type GithubRepository struct {
@@ -68,9 +69,18 @@ type AcceptedAssignment struct {
 
 type AcceptedAssignmentList struct {
 	AcceptedAssignments []AcceptedAssignment
-	Classroom           ShortClassroom
+	Classroom           Classroom
 	Assignment          Assignment
 	Count               int
+}
+
+type GitHubOrganization struct {
+	Id        int    `json:"id"`
+	Login     string `json:"login"`
+	NodeID    string `json:"node_id"`
+	HtmlUrl   string `json:"html_url"`
+	Name      string `json:"name"`
+	AvatarUrl string `json:"avatar_url"`
 }
 
 func NewAssignmentList(assignments []Assignment) AssignmentList {
