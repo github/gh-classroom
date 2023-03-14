@@ -16,6 +16,11 @@ func TestListingAssignments(t *testing.T) {
 		t.Setenv("GITHUB_TOKEN", "999")
 
 		gock.New("https://api.github.com").
+			Get("/classrooms/1234").
+			Reply(200).
+			JSON(`{"name": "Classroom over api"}`)
+
+		gock.New("https://api.github.com").
 			Get("/classrooms/1234/assignments").
 			MatchParam("page", "1").
 			MatchParam("per_page", "30").
@@ -78,6 +83,11 @@ func TestListingAssignments(t *testing.T) {
 			Reply(200).
 			JSON(`[]`)
 
+		gock.New("https://api.github.com").
+			Get("/classrooms/1234").
+			Reply(200).
+			JSON(`{"name": "Classroom over api"}`)
+
 		actual := new(bytes.Buffer)
 
 		f := &cmdutil.Factory{}
@@ -91,7 +101,7 @@ func TestListingAssignments(t *testing.T) {
 		err := command.Execute()
 		assert.NoError(t, err, "Should not error")
 
-		expected := "No assignments for \n\nID\tTitle\tSubmission Public\tType\tDeadline\tEditor\tInvitation Link\tAccepted\tSubmissions\tPassing\n"
+		expected := "No assignments for Classroom over api\n\nID\tTitle\tSubmission Public\tType\tDeadline\tEditor\tInvitation Link\tAccepted\tSubmissions\tPassing\n"
 
 		assert.Equal(t, expected, actual.String(), "Actual output should match expected output")
 	})
