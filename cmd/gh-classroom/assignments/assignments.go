@@ -59,7 +59,11 @@ func NewCmdAssignments(f *cmdutil.Factory) *cobra.Command {
 					fmt.Fprintln(io.ErrOut, "Opening in your browser.")
 				}
 				browser := browser.New("", cmd.OutOrStdout(), cmd.OutOrStderr())
-				browser.Browse(assignmentList.Url())
+				err := browser.Browse(assignmentList.Url())
+				if err != nil {
+					log.Fatal(err)
+				}
+
 				return
 			}
 
@@ -87,7 +91,11 @@ func NewCmdAssignments(f *cmdutil.Factory) *cobra.Command {
 				t.AddField(strconv.Itoa(assignment.Passing), tableprinter.WithTruncate(nil))
 				t.EndRow()
 			}
-			t.Render()
+
+			err = t.Render()
+			if err != nil {
+				log.Fatal(err)
+			}
 		},
 	}
 	cmd.Flags().BoolVar(&web, "web", false, "Open the assignment list in a browser")

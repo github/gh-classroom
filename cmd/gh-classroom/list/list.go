@@ -47,7 +47,7 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 			if count == 0 {
 				fmt.Fprintln(cmd.OutOrStderr(), "No classrooms found")
 			} else {
-				fmt.Fprintln(cmd.OutOrStderr(), fmt.Sprintf("%v\n", text.Pluralize(count, "Classroom")))
+				fmt.Fprintf(cmd.OutOrStderr(), "%v\n\n", text.Pluralize(count, "Classroom"))
 			}
 
 			t := tableprinter.New(cmd.OutOrStdout(), true, 14)
@@ -57,7 +57,10 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 					fmt.Fprintln(cmd.ErrOrStderr(), "Opening in your browser.")
 				}
 				browser := browser.New("", io.Out, io.ErrOut)
-				browser.Browse("https://classroom.github.com/classrooms")
+				err := browser.Browse("https://classroom.github.com/classrooms")
+				if err != nil {
+					log.Fatal(err)
+				}
 				return
 			}
 
@@ -71,7 +74,11 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 				t.AddField(classroom.Url, tableprinter.WithTruncate(nil))
 				t.EndRow()
 			}
-			t.Render()
+
+			err = t.Render()
+			if err != nil {
+				log.Fatal(err)
+			}
 		},
 	}
 
