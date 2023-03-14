@@ -10,16 +10,17 @@ import (
 )
 
 func TestListingAssignments(t *testing.T) {
-	defer gock.Off()
+	t.Run("with an assignment", func(t *testing.T) {
+		defer gock.Off()
 
-	t.Setenv("GITHUB_TOKEN", "999")
+		t.Setenv("GITHUB_TOKEN", "999")
 
-	gock.New("https://api.github.com").
-		Get("/classrooms/1234/assignments").
-		MatchParam("page", "1").
-		MatchParam("per_page", "30").
-		Reply(200).
-		JSON(`[{
+		gock.New("https://api.github.com").
+			Get("/classrooms/1234/assignments").
+			MatchParam("page", "1").
+			MatchParam("per_page", "30").
+			Reply(200).
+			JSON(`[{
     "id": 1,
     "public_repo": false,
     "title": "New assignment here",
@@ -45,22 +46,53 @@ func TestListingAssignments(t *testing.T) {
     }
   }]`)
 
-	actual := new(bytes.Buffer)
+		actual := new(bytes.Buffer)
 
-	f := &cmdutil.Factory{}
-	command := NewCmdAssignments(f)
-	command.SetOut(actual)
-	command.SetErr(actual)
-	command.SetArgs([]string{
-		"-c1234",
+		f := &cmdutil.Factory{}
+		command := NewCmdAssignments(f)
+		command.SetOut(actual)
+		command.SetErr(actual)
+		command.SetArgs([]string{
+			"-c1234",
+		})
+
+		err := command.Execute()
+		assert.NoError(t, err, "Should not error")
+
+		expected := "1 Assignment for Classroom over api\n\n" +
+			"ID\tTitle\tSubmission Public\tType\tDeadline\tEditor\tInvitation Link\tAccepted\tSubmissions\tPassing\n" +
+			"1\tNew assignment here\tfalse\tindividual\t\t\thttp://github.localhost/assignment-invitations/594b54b4dcffafea7d9671116e7ae8d4\t0\t0\t0\n"
+
+		assert.Equal(t, expected, actual.String(), "Actual output should match expected output")
 	})
 
-	err := command.Execute()
-	assert.NoError(t, err, "Should not error")
+	t.Run("with no assignments", func(t *testing.T) {
+		defer gock.Off()
 
-	expected := "1 Assignment for Classroom over api\n\n" +
-		"ID\tTitle\tSubmission Public\tType\tDeadline\tEditor\tInvitation Link\tAccepted\tSubmissions\tPassing\n" +
-		"1\tNew assignment here\tfalse\tindividual\t\t\thttp://github.localhost/assignment-invitations/594b54b4dcffafea7d9671116e7ae8d4\t0\t0\t0\n"
+		t.Setenv("GITHUB_TOKEN", "999")
 
-	assert.Equal(t, expected, actual.String(), "Actual output should match expected output")
+		gock.New("https://api.github.com").
+			Get("/classrooms/1234/assignments").
+			MatchParam("page", "1").
+			MatchParam("per_page", "30").
+			Reply(200).
+			JSON(`[]`)
+
+		actual := new(bytes.Buffer)
+
+		f := &cmdutil.Factory{}
+		command := NewCmdAssignments(f)
+		command.SetOut(actual)
+		command.SetErr(actual)
+		command.SetArgs([]string{
+			"-c1234",
+		})
+
+		err := command.Execute()
+		assert.NoError(t, err, "Should not error")
+
+		expected := "No assignments found.\n"
+
+		assert.Equal(t, expected, actual.String(), "Actual output should match expected output")
+	})
 }

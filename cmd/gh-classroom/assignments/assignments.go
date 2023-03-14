@@ -52,6 +52,11 @@ func NewCmdAssignments(f *cmdutil.Factory) *cobra.Command {
 				log.Fatal(err)
 			}
 
+			if len(assignmentList.Assignments) == 0 {
+				fmt.Fprintln(cmd.OutOrStderr(), cs.Bold("No assignments found."))
+				return
+			}
+
 			fmt.Fprintln(cmd.OutOrStderr(), assignmentListSummary(assignmentList, cs))
 
 			if web {
