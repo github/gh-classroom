@@ -56,7 +56,10 @@ func NewCmdAcceptedAssignments(f *cmdutil.Factory) *cobra.Command {
 					fmt.Fprintln(cmd.ErrOrStderr(), "Opening in your browser.")
 				}
 				browser := browser.New("", cmd.OutOrStdout(), cmd.OutOrStderr())
-				browser.Browse(assignment.Url())
+				err := browser.Browse(assignment.Url())
+				if err != nil {
+					log.Fatal(err)
+				}
 				return
 			}
 			acceptedAssignments, err := classroom.ListAcceptedAssignments(client, assignmentId, page, perPage)
@@ -97,7 +100,10 @@ func NewCmdAcceptedAssignments(f *cmdutil.Factory) *cobra.Command {
 				t.AddField(acceptedAssignment.RepositoryUrl(), tableprinter.WithTruncate(nil))
 				t.EndRow()
 			}
-			t.Render()
+			err = t.Render()
+			if err != nil {
+				log.Fatal(err)
+			}
 		},
 	}
 

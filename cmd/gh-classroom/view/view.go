@@ -43,6 +43,9 @@ With "--web", open the classroom in a browser instead.`,
 			}
 
 			response, err := classroom.GetClassroom(client, classroomId)
+			if err != nil {
+				log.Fatal(err)
+			}
 
 			if web {
 				OpenInBrowser(response.Url)
@@ -50,8 +53,6 @@ With "--web", open the classroom in a browser instead.`,
 			}
 
 			RenderModel(response, cmd.OutOrStdout())
-
-			return
 		},
 	}
 
@@ -68,6 +69,8 @@ func OpenInBrowser(url string) {
 		fmt.Fprintln(io.ErrOut, c.Yellow("\nOpening classroom in your browser...\n"))
 	}
 	browser := browser.New("", io.Out, io.ErrOut)
-	browser.Browse(url)
-	return
+	err := browser.Browse(url)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

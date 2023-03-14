@@ -50,6 +50,10 @@ func NewCmdAssignment(f *cmdutil.Factory) *cobra.Command {
 
 			response, err := classroom.GetAssignment(client, assignmentId)
 
+			if err != nil {
+				log.Fatal(err)
+			}
+
 			if web {
 				OpenInBrowser(response.Url())
 				return
@@ -74,6 +78,8 @@ func OpenInBrowser(url string) {
 	}
 
 	browser := browser.New("", io.Out, io.ErrOut)
-	browser.Browse(url)
-	return
+	err := browser.Browse(url)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

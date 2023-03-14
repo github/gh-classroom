@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	cmdFactory := factory.New("0.1.1")
+	cmdFactory := factory.New("0.1.3")
 
 	cmd := root.NewRootCmd(cmdFactory)
 	err := cmd.Execute()

@@ -16,7 +16,10 @@ func TestAssignmentsCommandShowsHelp(t *testing.T) {
 	cmd := NewRootCmd(f)
 	cmd.SetOut(&actual)
 	cmd.SetArgs([]string{"assignments", "--help"})
-	cmd.Execute()
+	err := cmd.Execute()
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	assert.Equal(t, expected, actual.String())
 }
