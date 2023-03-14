@@ -91,7 +91,7 @@ func TestListingAssignments(t *testing.T) {
 		err := command.Execute()
 		assert.NoError(t, err, "Should not error")
 
-		expected := "No assignments found.\n"
+		expected := "No assignments for \n\nID\tTitle\tSubmission Public\tType\tDeadline\tEditor\tInvitation Link\tAccepted\tSubmissions\tPassing\n"
 
 		assert.Equal(t, expected, actual.String(), "Actual output should match expected output")
 	})

@@ -8,17 +8,16 @@ import (
 
 func ListAssignments(client api.RESTClient, classroomID int, page int, perPage int) (AssignmentList, error) {
 	var response []Assignment
-	var assignmentList AssignmentList
 	err := client.Get(fmt.Sprintf("classrooms/%v/assignments?page=%v&per_page=%v", classroomID, page, perPage), &response)
 	if err != nil {
 		return AssignmentList{}, err
 	}
 
 	if len(response) == 0 {
-		assignmentList = AssignmentList{}
-	} else {
-		assignmentList = NewAssignmentList(response)
-	}
+		return AssignmentList{}, nil
+	} 
+
+	assignmentList := NewAssignmentList(response)
 
 	return assignmentList, nil
 }
@@ -39,6 +38,10 @@ func ListAcceptedAssignments(client api.RESTClient, assignmentID int, page int, 
 	err := client.Get(fmt.Sprintf("assignments/%v/accepted_assignments?page=%v&per_page=%v", assignmentID, page, perPage), &response)
 	if err != nil {
 		return AcceptedAssignmentList{}, err
+	}
+
+	if len(response) == 0 {
+		return AcceptedAssignmentList{}, nil
 	}
 
 	acceptedAssignmentList := NewAcceptedAssignmentList(response)
