@@ -2,6 +2,7 @@ package classroom
 
 import (
 	"fmt"
+	"strings"
 )
 
 type AssignmentList struct {
@@ -121,4 +122,8 @@ func (a Assignment) IsGroupAssignment() bool {
 
 func (a AcceptedAssignment) RepositoryUrl() string {
 	return a.Repository.HtmlUrl
+}
+
+func (gr GithubRepository) Name() string {
+	return strings.Split(gr.FullName, "/")[1]
 }
