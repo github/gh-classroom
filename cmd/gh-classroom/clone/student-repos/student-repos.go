@@ -53,6 +53,11 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 			}
 
 			acceptedAssignmentList, err := classroom.ListAcceptedAssignments(client, assignmentId, page, perPage)
+
+			if err != nil {
+				log.Fatal(err)
+			}
+
 			assignment := acceptedAssignmentList.Assignment
 
 			if strings.HasPrefix(directory, "~") {
