@@ -33,6 +33,7 @@ func printAssigment(assignment classroom.Assignment, out io.Writer) {
 	fmt.Fprintln(out, c.Yellow("Invite Link:"), c.Green(assignment.InviteLink))
 	fmt.Fprintln(out, c.Yellow("Starter Code Repo URL:"), c.Green(assignment.StarterCodeRepository.HtmlUrl))
 	fmt.Fprintln(out, c.Yellow("Type:"), c.Green(fmt.Sprintf("%v assignment", assignment.AssignmentType)))
+	fmt.Fprintln(out, c.Yellow("Deadline:"), c.Green(assignment.Deadline))
 	fmt.Fprintln(out, c.Yellow("Accepted:"), c.Green(strconv.Itoa(assignment.Accepted)))
 	fmt.Fprintln(out, c.Yellow("Submissions:"), c.Green(strconv.Itoa(assignment.Submissions)))
 	fmt.Fprintln(out, c.Yellow("Passing:"), c.Green(strconv.Itoa(assignment.Passing)))
