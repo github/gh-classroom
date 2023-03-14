@@ -22,6 +22,7 @@ func NewCmdAssignments(f *cmdutil.Factory) *cobra.Command {
 	var page int
 	var perPage int
 	var classroomId int
+	var cr classroom.Classroom
 
 	cmd := &cobra.Command{
 		Use:   "assignments",
@@ -38,13 +39,20 @@ func NewCmdAssignments(f *cmdutil.Factory) *cobra.Command {
 			}
 
 			if classroomId == 0 {
-				cr, err := shared.PromptForClassroom(client)
+				cr, err = shared.PromptForClassroom(client)
 				classroomId = cr.Id
 
 				if err != nil {
 					log.Fatal(err)
 				}
+			} else {
+				cr, err = classroom.GetClassroom(client, classroomId)
+				if err != nil {
+					log.Fatal(err)
+				}
+				fmt.Printf("%+v\n", cr)
 			}
+
 
 			assignmentList, err := classroom.ListAssignments(client, classroomId, page, perPage)
 
@@ -52,7 +60,7 @@ func NewCmdAssignments(f *cmdutil.Factory) *cobra.Command {
 				log.Fatal(err)
 			}
 
-			fmt.Fprintln(cmd.OutOrStderr(), assignmentListSummary(assignmentList, cs))
+			fmt.Fprintln(cmd.OutOrStderr(), assignmentListSummary(cr, assignmentList, cs))
 
 			if web {
 				if term.IsTerminalOutput() {
@@ -108,10 +116,10 @@ func NewCmdAssignments(f *cmdutil.Factory) *cobra.Command {
 	return cmd
 }
 
-func assignmentListSummary(a classroom.AssignmentList, cs *iostreams.ColorScheme) string {
+func assignmentListSummary(cr classroom.Classroom, a classroom.AssignmentList, cs *iostreams.ColorScheme) string {
 	if a.Count == 0 {
-		return fmt.Sprintf("No assignments for %v\n", cs.Blue(a.Classroom.Name))
+		return fmt.Sprintf("No assignments for %v\n", cs.Blue(cr.Name))
 	} else {
-		return fmt.Sprintf("%v for %v\n", text.Pluralize(a.Count, "Assignment"), cs.Blue(a.Classroom.Name))
+		return fmt.Sprintf("%v for %v\n", text.Pluralize(a.Count, "Assignment"), cs.Blue(cr.Name))
 	}
 }

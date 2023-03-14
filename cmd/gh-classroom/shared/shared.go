@@ -1,6 +1,8 @@
 package shared
 
 import (
+	"errors"
+
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/cli/go-gh/pkg/api"
 	"github.com/github/gh-classroom/pkg/classroom"
@@ -12,8 +14,13 @@ func PromptForClassroom(client api.RESTClient) (classroomId classroom.Classroom,
 	}
 
 	classrooms, err := classroom.ListClassrooms(client, 1, 100)
+
 	if err != nil {
 		return classroom.Classroom{}, err
+	}
+
+	if len(classrooms) == 0 {
+		return classroom.Classroom{}, errors.New("No classrooms found.")
 	}
 
 	optionMap := make(map[string]classroom.Classroom)
@@ -59,6 +66,10 @@ func PromptForAssignment(client api.RESTClient, classroomId int) (assignment cla
 	for _, assignment := range assignmentList.Assignments {
 		optionMap[assignment.Title] = assignment
 		options = append(options, assignment.Title)
+	}
+
+	if len(options) == 0 {
+		return classroom.Assignment{}, errors.New("No assignments found for this classroom.")
 	}
 
 	var qs = []*survey.Question{
