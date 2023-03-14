@@ -36,6 +36,7 @@ func TestListingAssignments(t *testing.T) {
     "submissions": 0,
     "passing": 0,
     "language": null,
+    "deadline": null,
     "classroom": {
       "id": 1,
       "name": "Classroom over api",
@@ -58,8 +59,8 @@ func TestListingAssignments(t *testing.T) {
 	assert.NoError(t, err, "Should not error")
 
 	expected := "1 Assignment for Classroom over api\n\n" +
-		"ID\tTitle\tSubmission Public\tType\tEditor\tInvitation Link\tAccepted\tSubmissions\tPassing\n" +
-		"1\tNew assignment here\tfalse\tindividual\t\thttp://github.localhost/assignment-invitations/594b54b4dcffafea7d9671116e7ae8d4\t0\t0\t0\n"
+		"ID\tTitle\tSubmission Public\tType\tDeadline\tEditor\tInvitation Link\tAccepted\tSubmissions\tPassing\n" +
+		"1\tNew assignment here\tfalse\tindividual\t\t\thttp://github.localhost/assignment-invitations/594b54b4dcffafea7d9671116e7ae8d4\t0\t0\t0\n"
 
 	assert.Equal(t, expected, actual.String(), "Actual output should match expected output")
 }

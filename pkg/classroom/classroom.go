@@ -28,6 +28,7 @@ type Assignment struct {
 	Submissions                 int              `json:"submissions"`
 	Passing                     int              `json:"passing"`
 	Language                    string           `json:"language"`
+	Deadline                    string           `json:"deadline"`
 	Classroom                   Classroom        `json:"classroom"`
 	StarterCodeRepository       GithubRepository `json:"starter_code_repository"`
 }
