@@ -24,8 +24,7 @@ func NewCmdAssignment(f *cmdutil.Factory) *cobra.Command {
 		Use:     "assignment",
 		Example: `$ gh classroom assignment -a 4876`,
 		Short:   "Show the details of an assignment",
-		Long: `Display the details of an assignment.
-		With the "--web" flag, the assignment will be opened in a browser instead.`,
+		Long: "Display the details of an assignment",
 		Run: func(cmd *cobra.Command, args []string) {
 			client, err := gh.RESTClient(nil)
 
