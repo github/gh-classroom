@@ -23,8 +23,8 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:     "list",
-		Short:   "List Classrooms",
-		Long:    "List of Classrooms you own.",
+		Short:   "List classrooms",
+		Long:    "List of classrooms you own",
 		Example: `$ gh classroom list --page 1`,
 		Aliases: []string{"ls"},
 		Run: func(cmd *cobra.Command, args []string) {

@@ -26,8 +26,8 @@ func NewCmdAssignments(f *cmdutil.Factory) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "assignments",
-		Short: "Display a list of assignments for a classroom.",
-		Long:  "Display a list of assignments for a classroom.",
+		Short: "Display a list of assignments for a classroom",
+		Long:  "Display a list of assignments for a classroom",
 		Run: func(cmd *cobra.Command, args []string) {
 			term := term.FromEnv()
 			io := iostreams.System()
