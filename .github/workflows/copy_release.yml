@@ -1,0 +1,46 @@
+name: Copy Release
+
+on:
+  workflow_dispatch:
+    
+  release:
+    types: [published]
+
+jobs:
+  copy_release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get release details from source repository
+      id: get_release_details
+      run: |
+        RELEASE_INFO=$(gh api repos/github/gh-classroom-private/releases/latest --jq '.' | base64 | tr -d '\n')
+        echo "RELEASE_INFO=$RELEASE_INFO" >> $GITHUB_ENV
+
+    - name: Create release in target repository
+      env:
+        GITHUB_TOKEN: ${{ secrets.TARGET_REPO_ACCESS_TOKEN }}
+      run: |
+        TARGET_REPO="github/gh-classroom"
+        RELEASE_NAME=$(echo "$RELEASE_INFO" | base64 -d | jq -r '.name')
+        RELEASE_BODY=$(echo "$RELEASE_INFO" | base64 -d | jq -r '.body')
+        TAG_NAME=$(echo "$RELEASE_INFO" | base64 -d | jq -r '.tag_name')
+        RELEASE_ID=$(gh api repos/$TARGET_REPO/releases -X POST -F tag_name=$TAG_NAME -F name="$RELEASE_NAME" -F body="$RELEASE_BODY" --jq ".id")
+
+    - name: Download and upload release assets
+      env:
+        GITHUB_TOKEN: ${{ secrets.TARGET_REPO_ACCESS_TOKEN }}
+      run: |
+        TARGET_REPO="github/gh-classroom"
+        ASSETS_URL=$(echo "$RELEASE_INFO" | base64 -d | jq -r '.assets_url')
+        ASSETS_INFO=$(gh api "$ASSETS_URL" --jq '.')
+
+        for asset in $(echo "$ASSETS_INFO" | jq -r '.[] | @base64'); do
+          _jq() {
+            echo ${asset} | base64 --decode | jq -r ${1}
+          }
+          DOWNLOAD_URL=$(_jq '.browser_download_url')
+          ASSET_NAME=$(_jq '.name')
+          echo "Uploading asset $ASSET_NAME to target repository"
+          gh api -X POST repos/$TARGET_REPO/releases/$RELEASE_ID/assets -F "name=$ASSET_NAME" -F "label=$ASSET_NAME" --input "$DOWNLOAD_URL"
+        done
+
