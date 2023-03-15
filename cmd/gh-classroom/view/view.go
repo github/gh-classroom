@@ -21,7 +21,7 @@ func NewCmdView(f *cmdutil.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "view",
 		Example: `$ gh classroom view -c 4876 --web`,
-		Short:   "Show the details of a Classroom",
+		Short:   "Show the details of a classroom",
 		Long: `Display the classroom ID, classroom slug, title and other information about a classroom.
 With "--web", open the classroom in a browser instead.`,
 		Run: func(cmd *cobra.Command, args []string) {
