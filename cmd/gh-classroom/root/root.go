@@ -6,6 +6,7 @@ import (
 
 	acceptedAssignments "github.com/github/gh-classroom/cmd/gh-classroom/accepted-assignments"
 	"github.com/github/gh-classroom/cmd/gh-classroom/assignment"
+	assignmentgrades "github.com/github/gh-classroom/cmd/gh-classroom/assignment-grades"
 	"github.com/github/gh-classroom/cmd/gh-classroom/assignments"
 	"github.com/github/gh-classroom/cmd/gh-classroom/clone"
 	"github.com/github/gh-classroom/cmd/gh-classroom/list"
@@ -24,6 +25,7 @@ func NewRootCmd(f *cmdutil.Factory) *cobra.Command {
 	cmd.AddCommand(assignment.NewCmdAssignment(f))
 	cmd.AddCommand(acceptedAssignments.NewCmdAcceptedAssignments(f))
 	cmd.AddCommand(clone.NewCmdClone(f))
+	cmd.AddCommand(assignmentgrades.NewCmdAssignments(f))
 
 	return cmd
 }

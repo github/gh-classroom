@@ -31,6 +31,7 @@ type Assignment struct {
 	Deadline                    string           `json:"deadline"`
 	Classroom                   Classroom        `json:"classroom"`
 	StarterCodeRepository       GithubRepository `json:"starter_code_repository"`
+	Grades                      [][]string       `json:"grades"` // TODO: return this from the GitHub API
 }
 
 type Classroom struct {
