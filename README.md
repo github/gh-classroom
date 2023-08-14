@@ -13,13 +13,17 @@ GitHub Classroom CLI Extension is a powerful and easy-to-use command line tool t
 ### Installation 
 - Install [Homebrew](https://brew.sh/)
 - Install the gh cli
-```bash
-brew install gh
-```
+  ```bash
+  brew install gh
+  ```
 - Install this extension
-```bash
-gh extension install github/gh-classroom
-```
+  ```bash
+  gh extension install github/gh-classroom
+  ```
+- To update this extension
+  ```bash
+  gh extension upgrade classroom
+  ```
 
 ### Commands
 
