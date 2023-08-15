@@ -5,6 +5,7 @@ ownership:
   description: A command line tool that enhances the functionality of the GitHub CLI, specifically tailored for educators using GitHub Classroom.
   kind: artifact
   team: github/classroom
+  team_slack: edu-classroom
   exec_sponsor: stormypeters
   product_manager: ryanhecht
   repo: https://github.com/github/gh-classroom
