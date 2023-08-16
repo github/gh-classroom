@@ -33,6 +33,10 @@ type Assignment struct {
 	StarterCodeRepository       GithubRepository `json:"starter_code_repository"`
 }
 
+type AssignmentGrades struct {
+	Grades [][]string `json:"grades"`
+}
+
 type Classroom struct {
 	Id           int                `json:"id"`
 	Name         string             `json:"name"`

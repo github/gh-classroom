@@ -15,7 +15,7 @@ func ListAssignments(client api.RESTClient, classroomID int, page int, perPage i
 
 	if len(response) == 0 {
 		return AssignmentList{}, nil
-	} 
+	}
 
 	assignmentList := NewAssignmentList(response)
 
@@ -56,6 +56,15 @@ func GetAssignment(client api.RESTClient, assignmentID int) (Assignment, error) 
 		return Assignment{}, err
 	}
 
+	return response, nil
+}
+
+func GetAssignmentGrades(client api.RESTClient, assignmentID int) (AssignmentGrades, error) {
+	var response AssignmentGrades
+	err := client.Get(fmt.Sprintf("assignments/%v/assignment_grades", assignmentID), &response)
+	if err != nil {
+		return AssignmentGrades{}, err
+	}
 	return response, nil
 }
 
