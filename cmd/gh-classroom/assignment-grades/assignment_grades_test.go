@@ -20,7 +20,7 @@ func TestAssignmentGradesFatalOnInvalidAPIResponse(t *testing.T) {
 		t.Setenv("GITHUB_TOKEN", "999")
 
 		gock.New("https://api.github.com").
-			Get("/assignments/1234/assignment_grades").
+			Get("/assignments/1234/grades").
 			Reply(200).
 			JSON(`{ }`)
 
@@ -57,7 +57,7 @@ func TestGettingGrades(t *testing.T) {
 
 		// given an api response with grades returned
 		gock.New("https://api.github.com").
-			Get("/assignments/1234/assignment_grades").
+			Get("/assignments/1234/grades").
 			Reply(200).
 			JSON(`{ "grades": [["student1", "0"], ["student2", "30"], ["student3", "100"]]}`)
 
