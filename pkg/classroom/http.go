@@ -55,15 +55,14 @@ func GetAssignment(client api.RESTClient, assignmentID int) (Assignment, error) 
 	if err != nil {
 		return Assignment{}, err
 	}
-
 	return response, nil
 }
 
-func GetAssignmentGrades(client api.RESTClient, assignmentID int) (AssignmentGrades, error) {
-	var response AssignmentGrades
+func GetAssignmentGrades(client api.RESTClient, assignmentID int) ([]AssignmentGrade, error) {
+	var response []AssignmentGrade
 	err := client.Get(fmt.Sprintf("assignments/%v/grades", assignmentID), &response)
 	if err != nil {
-		return AssignmentGrades{}, err
+		return nil, err
 	}
 	return response, nil
 }

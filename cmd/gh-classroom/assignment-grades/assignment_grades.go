@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/cli/cli/v2/pkg/cmdutil"
 	"github.com/cli/go-gh"
@@ -17,9 +18,10 @@ import (
 
 func NewCmdAssignmentGrades(f *cmdutil.Factory) *cobra.Command {
 	var (
-		web          bool
-		assignmentID int
-		filename     string
+		web               bool
+		assignmentID      int
+		filename          string
+		isGroupAssignment bool
 	)
 
 	cmd := &cobra.Command{
@@ -65,8 +67,8 @@ func NewCmdAssignmentGrades(f *cmdutil.Factory) *cobra.Command {
 			if err != nil {
 				log.Fatal(err)
 			}
-			grades := response.Grades
-			if len(grades) == 0 {
+
+			if len(response) == 0 {
 				log.Fatal("No grades were returned for assignment")
 			}
 
@@ -77,9 +79,37 @@ func NewCmdAssignmentGrades(f *cmdutil.Factory) *cobra.Command {
 			defer f.Close()
 
 			w := csv.NewWriter(f)
-			err = w.WriteAll(grades)
-			if err != nil {
-				log.Fatal(err)
+			defer w.Flush()
+
+			for i, grade := range response {
+				if len(grade.GroupName) != 0 {
+					isGroupAssignment = true
+				}
+
+				if i == 0 {
+					w.Write(gradeCSVHeaders(isGroupAssignment))
+				}
+
+				row := []string{
+					grade.AssignmentName,
+					grade.AssignmentURL,
+					grade.StarterCodeURL,
+					grade.GithubUsername,
+					grade.RosterIdentifier,
+					grade.StudentRepositoryName,
+					grade.StudentRepositoryURL,
+					grade.SubmissionTimestamp,
+					strconv.Itoa(grade.PointsAwarded),
+					strconv.Itoa(grade.PointsAvailable),
+				}
+				if isGroupAssignment {
+					row = append(row, grade.GroupName)
+				}
+
+				err := w.Write(row)
+				if err != nil {
+					log.Fatalln("error writing to file", err)
+				}
 			}
 		},
 	}
@@ -88,4 +118,23 @@ func NewCmdAssignmentGrades(f *cmdutil.Factory) *cobra.Command {
 	cmd.Flags().IntVarP(&assignmentID, "assignment-id", "a", 0, "Assignment ID (optional)")
 	cmd.Flags().StringVarP(&filename, "file-name", "f", "grades.csv", "File name (optional)")
 	return cmd
+}
+
+func gradeCSVHeaders(isGroupAssignment bool) []string {
+	headers := []string{
+		"assignment_name",
+		"assignment_url",
+		"starter_code_url",
+		"github_username",
+		"roster_identifier",
+		"student_repository_name",
+		"student_repository_url",
+		"submission_timestamp",
+		"points_awarded",
+		"points_available",
+	}
+	if isGroupAssignment {
+		headers = append(headers, "group_name")
+	}
+	return headers
 }
