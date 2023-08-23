@@ -42,8 +42,8 @@ type AssignmentGrade struct {
 	StudentRepositoryName string `json:"student_repository_name"`
 	StudentRepositoryURL  string `json:"student_repository_url"`
 	SubmissionTimestamp   string `json:"submission_timestamp"`
-	PointsAwarded         int    `json:"points_awarded"`
-	PointsAvailable       int    `json:"points_available"`
+	PointsAwarded         string `json:"points_awarded"`
+	PointsAvailable       string `json:"points_available"`
 	GroupName             string `json:"group_name"`
 }
 

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 
 	"github.com/cli/cli/v2/pkg/cmdutil"
 	"github.com/cli/go-gh"
@@ -102,8 +101,8 @@ func NewCmdAssignmentGrades(f *cmdutil.Factory) *cobra.Command {
 					grade.StudentRepositoryName,
 					grade.StudentRepositoryURL,
 					grade.SubmissionTimestamp,
-					strconv.Itoa(grade.PointsAwarded),
-					strconv.Itoa(grade.PointsAvailable),
+					grade.PointsAwarded,
+					grade.PointsAvailable,
 				}
 				if isGroupAssignment {
 					row = append(row, grade.GroupName)
