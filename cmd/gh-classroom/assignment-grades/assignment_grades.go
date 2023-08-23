@@ -113,6 +113,7 @@ func NewCmdAssignmentGrades(f *cmdutil.Factory) *cobra.Command {
 					log.Fatalln("error writing row to file", err)
 				}
 			}
+			fmt.Println("Successfully wrote grades to", filename)
 		},
 	}
 
