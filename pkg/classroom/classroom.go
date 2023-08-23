@@ -33,6 +33,20 @@ type Assignment struct {
 	StarterCodeRepository       GithubRepository `json:"starter_code_repository"`
 }
 
+type AssignmentGrade struct {
+	AssignmentName        string `json:"assignment_name"`
+	AssignmentURL         string `json:"assignment_url"`
+	StarterCodeURL        string `json:"starter_code_url"`
+	GithubUsername        string `json:"github_username"`
+	RosterIdentifier      string `json:"roster_identifier"`
+	StudentRepositoryName string `json:"student_repository_name"`
+	StudentRepositoryURL  string `json:"student_repository_url"`
+	SubmissionTimestamp   string `json:"submission_timestamp"`
+	PointsAwarded         string `json:"points_awarded"`
+	PointsAvailable       string `json:"points_available"`
+	GroupName             string `json:"group_name"`
+}
+
 type Classroom struct {
 	Id           int                `json:"id"`
 	Name         string             `json:"name"`
