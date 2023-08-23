@@ -87,7 +87,10 @@ func NewCmdAssignmentGrades(f *cmdutil.Factory) *cobra.Command {
 				}
 
 				if i == 0 {
-					w.Write(gradeCSVHeaders(isGroupAssignment))
+					err := w.Write(gradeCSVHeaders(isGroupAssignment))
+					if err != nil {
+						log.Fatalln("error writing header to file", err)
+					}
 				}
 
 				row := []string{
@@ -108,7 +111,7 @@ func NewCmdAssignmentGrades(f *cmdutil.Factory) *cobra.Command {
 
 				err := w.Write(row)
 				if err != nil {
-					log.Fatalln("error writing to file", err)
+					log.Fatalln("error writing row to file", err)
 				}
 			}
 		},
