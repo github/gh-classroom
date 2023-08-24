@@ -154,6 +154,52 @@ func TestGetAssignment(t *testing.T) {
 	assert.Equal(t, "Classroom Name", actual.Classroom.Name)
 }
 
+func TestGetAssignmentGrades(t *testing.T) {
+	t.Setenv("GITHUB_TOKEN", "999")
+	defer gock.Off()
+
+	gock.New("https://api.github.com").
+		Get("/assignments/1/grades").
+		Reply(200).
+		JSON(`[{
+			"assignment_name": "Assignment 1",
+			"assignment_url": "https://example.com/assignment/1",
+			"starter_code_url": "https://example.com/starter-code",
+			"github_username": "student1",
+			"roster_identifier": "A123",
+			"student_repository_name": "student1-repo",
+			"student_repository_url": "https://github.com/student1/student1-repo",
+			"submission_timestamp": "2023-08-24T12:34:56Z",
+			"points_awarded": "90",
+			"points_available": "100",
+			"group_name": "Group A"
+	}]`)
+
+	client, err := gh.RESTClient(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	actual, err := GetAssignmentGrades(client, 1)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.Equal(t, 1, len(actual))
+	assert.Equal(t, "Assignment 1", actual[0].AssignmentName)
+	assert.Equal(t, "https://example.com/assignment/1", actual[0].AssignmentURL)
+	assert.Equal(t, "https://example.com/starter-code", actual[0].StarterCodeURL)
+	assert.Equal(t, "student1", actual[0].GithubUsername)
+	assert.Equal(t, "A123", actual[0].RosterIdentifier)
+	assert.Equal(t, "student1-repo", actual[0].StudentRepositoryName)
+	assert.Equal(t, "https://github.com/student1/student1-repo", actual[0].StudentRepositoryURL)
+	assert.Equal(t, "2023-08-24T12:34:56Z", actual[0].SubmissionTimestamp)
+	assert.Equal(t, "90", actual[0].PointsAwarded)
+	assert.Equal(t, "100", actual[0].PointsAvailable)
+	assert.Equal(t, "Group A", actual[0].GroupName)
+}
+
 func TestGetClassroom(t *testing.T) {
 	t.Setenv("GITHUB_TOKEN", "999")
 	defer gock.Off()
