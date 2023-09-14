@@ -20,6 +20,7 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 	var directory string
 	var page int
 	var perPage int
+	var getAll bool
 
 	cmd := &cobra.Command{
 		Use:   "student-repos",
@@ -51,8 +52,12 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 					log.Fatal(err)
 				}
 			}
-
-			acceptedAssignmentList, err := classroom.ListAcceptedAssignments(client, assignmentId, page, perPage)
+			var acceptedAssignmentList classroom.AcceptedAssignmentList
+			if getAll {
+				acceptedAssignmentList, err = classroom.ListAllAcceptedAssignments(client, assignmentId, perPage)
+			} else {
+				acceptedAssignmentList, err = classroom.ListAcceptedAssignments(client, assignmentId, page, perPage)
+			}
 
 			if err != nil {
 				log.Fatal(err)
@@ -98,6 +103,7 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 	cmd.Flags().StringVarP(&directory, "directory", "d", ".", "Directory to clone into")
 	cmd.Flags().IntVar(&page, "page", 1, "Page number")
 	cmd.Flags().IntVar(&perPage, "per-page", 30, "Number of accepted assignments per page")
+	cmd.Flags().BoolVar(&getAll, "all", true, "Clone All assignments by default")
 
 	return cmd
 }

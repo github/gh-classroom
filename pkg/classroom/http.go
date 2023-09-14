@@ -33,11 +33,47 @@ func ListClassrooms(client api.RESTClient, page int, perPage int) ([]Classroom, 
 	return response, nil
 }
 
-func ListAcceptedAssignments(client api.RESTClient, assignmentID int, page int, perPage int) (AcceptedAssignmentList, error) {
+func getAssignmentList(client api.RESTClient, assignmentID int, page int, perPage int) ([]AcceptedAssignment, error) {
 	var response []AcceptedAssignment
 	err := client.Get(fmt.Sprintf("assignments/%v/accepted_assignments?page=%v&per_page=%v", assignmentID, page, perPage), &response)
+	return response, err
+}
+
+func ListAcceptedAssignments(client api.RESTClient, assignmentID int, page int, perPage int) (AcceptedAssignmentList, error) {
+	response, err := getAssignmentList(client, assignmentID, page, perPage)
 	if err != nil {
 		return AcceptedAssignmentList{}, err
+	}
+
+	if len(response) == 0 {
+		return AcceptedAssignmentList{}, nil
+	}
+	acceptedAssignmentList := NewAcceptedAssignmentList(response)
+
+	return acceptedAssignmentList, nil
+}
+
+func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage int) (AcceptedAssignmentList, error) {
+	var page = 1
+	response, err := getAssignmentList(client, assignmentID, page, perPage)
+	if err != nil {
+		return AcceptedAssignmentList{}, err
+	}
+
+	if len(response) == 0 {
+		return AcceptedAssignmentList{}, nil
+	}
+
+	//keep calling ListAcceptedAssignments until we get them all
+	var nextList []AcceptedAssignment
+	for hasNext := true; hasNext; {
+		page += 1
+		nextList, err = getAssignmentList(client, assignmentID, page, perPage)
+		if err != nil {
+			return AcceptedAssignmentList{}, err
+		}
+		hasNext = len(nextList) > 0
+		response = append(response, nextList...)
 	}
 
 	if len(response) == 0 {
