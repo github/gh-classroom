@@ -64,7 +64,7 @@ func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage
 		return AcceptedAssignmentList{}, nil
 	}
 
-	//keep calling ListAcceptedAssignments until we get them all
+	//keep calling getAssignmentList until we get them all
 	var nextList []AcceptedAssignment
 	for hasNext := true; hasNext; {
 		page += 1
@@ -74,10 +74,6 @@ func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage
 		}
 		hasNext = len(nextList) > 0
 		response = append(response, nextList...)
-	}
-
-	if len(response) == 0 {
-		return AcceptedAssignmentList{}, nil
 	}
 
 	acceptedAssignmentList := NewAcceptedAssignmentList(response)
