@@ -20,6 +20,7 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 	var directory string
 	var page int
 	var perPage int
+	var sync bool
 
 	cmd := &cobra.Command{
 		Use:   "student-repos",
@@ -82,14 +83,43 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 				}
 			}
 
+			//Save off the cwd so we can restore it if we do a sync
+			baseDir, err := os.Getwd()
+			if err != nil {
+				log.Fatal(err)
+				return
+			}
 			for _, acceptAssignment := range acceptedAssignmentList.AcceptedAssignments {
 				clonePath := filepath.Join(fullPath, acceptAssignment.Repository.Name())
-				fmt.Printf("Cloning into: %v\n", clonePath)
-				_, _, err = gh.Exec("repo", "clone", acceptAssignment.Repository.FullName, "--", clonePath)
-				if err != nil {
-					log.Fatal(err)
-					return
+				if _, err := os.Stat(clonePath); os.IsNotExist(err) {
+					fmt.Printf("Cloning into: %v\n", clonePath)
+					_, _, err := gh.Exec("repo", "clone", acceptAssignment.Repository.FullName, "--", clonePath)
+					if err != nil {
+						log.Fatal(err)
+						return
+					}
+				} else if sync {
+					err = os.Chdir(clonePath)
+					if err != nil {
+						log.Fatal(err)
+						return
+					}
+					fmt.Printf("Syncing repo: %v\n", clonePath)
+					_, _, err := gh.Exec("repo", "sync")
+					if err != nil {
+						log.Fatal(err)
+						return
+					}
+					err = os.Chdir(baseDir)
+					if err != nil {
+						log.Fatal(err)
+						return
+					}
+
+				} else {
+					fmt.Printf("Skip existing repo: %v use --sync to pull down commits\n", clonePath)
 				}
+
 			}
 		},
 	}
@@ -98,6 +128,7 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 	cmd.Flags().StringVarP(&directory, "directory", "d", ".", "Directory to clone into")
 	cmd.Flags().IntVar(&page, "page", 1, "Page number")
 	cmd.Flags().IntVar(&perPage, "per-page", 30, "Number of accepted assignments per page")
+	cmd.Flags().BoolVar(&sync, "sync", false, "If the repository has already been cloned run gh repo sync instead")
 
 	return cmd
 }
