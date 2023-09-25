@@ -94,3 +94,45 @@ func PromptForAssignment(client api.RESTClient, classroomId int) (assignment cla
 
 	return optionMap[answer.Assignment], nil
 }
+
+func ListAcceptedAssignments(client api.RESTClient, assignmentID int, page int, perPage int) (classroom.AcceptedAssignmentList, error) {
+	response, err := classroom.GetAssignmentList(client, assignmentID, page, perPage)
+	if err != nil {
+		return classroom.AcceptedAssignmentList{}, err
+	}
+
+	if len(response) == 0 {
+		return classroom.AcceptedAssignmentList{}, nil
+	}
+	acceptedAssignmentList := classroom.NewAcceptedAssignmentList(response)
+
+	return acceptedAssignmentList, nil
+}
+
+func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage int) (classroom.AcceptedAssignmentList, error) {
+	var page = 1
+	response, err := classroom.GetAssignmentList(client, assignmentID, page, perPage)
+	if err != nil {
+		return classroom.AcceptedAssignmentList{}, err
+	}
+
+	if len(response) == 0 {
+		return classroom.AcceptedAssignmentList{}, nil
+	}
+
+	//keep calling getAssignmentList until we get them all
+	var nextList []classroom.AcceptedAssignment
+	for hasNext := true; hasNext; {
+		page += 1
+		nextList, err = classroom.GetAssignmentList(client, assignmentID, page, perPage)
+		if err != nil {
+			return classroom.AcceptedAssignmentList{}, err
+		}
+		hasNext = len(nextList) > 0
+		response = append(response, nextList...)
+	}
+
+	acceptedAssignmentList := classroom.NewAcceptedAssignmentList(response)
+
+	return acceptedAssignmentList, nil
+}

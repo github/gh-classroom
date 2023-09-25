@@ -21,3 +21,6 @@
 *.swp
 
 vendor/
+
+# Windows
+gh-classroom.exe
