@@ -67,7 +67,7 @@ func TestListClassrooms(t *testing.T) {
 	assert.Equal(t, "Classroom Name", actual[0].Name)
 }
 
-func TestListAcceptedAssignments(t *testing.T) {
+func TestGetAssignmentList(t *testing.T) {
 	t.Setenv("GITHUB_TOKEN", "999")
 	defer gock.Off()
 
@@ -97,6 +97,30 @@ func TestListAcceptedAssignments(t *testing.T) {
 			"id": 1,
 			"full_name": "org1/student1-repo"
 		}
+	},
+	{"id": 2,
+		"assignment": {
+			"id": 1,
+			"title": "Assignment 1",
+			"description": "This is the first assignment",
+			"due_date": "2018-01-01",
+			"classroom": {
+				"id": 1,
+				"name":      "Classroom Name"
+			},
+			"starter_code_repository": {
+				"id": 1,
+				"full_name": "org1/starter-code-repo"
+			}
+		},
+		"students": [{
+			"id": 2,
+			"login": "student2"
+		}],
+		"repository": {
+			"id": 2,
+			"full_name": "org1/student2-repo"
+		}
 	}]`)
 
 	client, err := gh.RESTClient(nil)
@@ -104,16 +128,22 @@ func TestListAcceptedAssignments(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	actual, err := ListAcceptedAssignments(client, 1, 1, 30)
-
+	//Ask for page 1 and 15 per page
+	actual, err := GetAssignmentList(client, 1, 1, 15)
 	if err != nil {
 		t.Fatal(err)
 	}
+	assert.Equal(t, 2, len(actual))
+	//check 1st entry
+	assert.Equal(t, 1, actual[0].Id)
+	assert.Equal(t, "org1/student1-repo", actual[0].Repository.FullName)
+	assert.Equal(t, "student1", actual[0].Students[0].Login)
 
-	assert.Equal(t, 1, actual.Count)
-	assert.Equal(t, 1, actual.AcceptedAssignments[0].Id)
-	assert.Equal(t, "org1/student1-repo", actual.AcceptedAssignments[0].Repository.FullName)
-	assert.Equal(t, "student1", actual.AcceptedAssignments[0].Students[0].Login)
+	//check 2nd entry
+	assert.Equal(t, 2, actual[1].Id)
+	assert.Equal(t, "org1/student2-repo", actual[1].Repository.FullName)
+	assert.Equal(t, "student2", actual[1].Students[0].Login)
+
 }
 
 func TestGetAssignment(t *testing.T) {
