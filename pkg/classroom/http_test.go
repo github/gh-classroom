@@ -8,6 +8,24 @@ import (
 	"gopkg.in/h2non/gock.v1"
 )
 
+func TestGetRetry(t *testing.T) {
+	t.Setenv("GITHUB_TOKEN", "999")
+	defer gock.Off()
+
+	gock.New("https://api.github.com").
+		Get("/").
+		Reply(500)
+
+	client, err := gh.RESTClient(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var foo interface{}
+	numRetry, err := getRetry(client, "https://api.github.com", foo)
+	assert.NotNil(t, err)
+	assert.Equal(t, numRetry, MaxRetry)
+}
+
 func TestListAssignments(t *testing.T) {
 	t.Setenv("GITHUB_TOKEN", "999")
 	defer gock.Off()
