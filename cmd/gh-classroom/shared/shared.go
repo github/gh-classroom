@@ -109,30 +109,48 @@ func ListAcceptedAssignments(client api.RESTClient, assignmentID int, page int, 
 	return acceptedAssignmentList, nil
 }
 
+type assignmentList struct {
+	assignments []classroom.AcceptedAssignment
+	Error       error
+}
+
 func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage int) (classroom.AcceptedAssignmentList, error) {
-	var page = 1
-	response, err := classroom.GetAssignmentList(client, assignmentID, page, perPage)
+
+	//Calculate the number of go channels to create. We will assign 1 channel per page
+	//so we don't put too much pressure on the API all at once
+	theAssignment, err := classroom.GetAssignment(client, assignmentID)
 	if err != nil {
 		return classroom.AcceptedAssignmentList{}, err
 	}
-
-	if len(response) == 0 {
-		return classroom.AcceptedAssignmentList{}, nil
+	numChannels := (theAssignment.Accepted / perPage)
+	//See if we need one more page. This is probably always going to be true
+	//But in the rare case it is not we can save one API call :)
+	if theAssignment.Accepted%perPage > 0 {
+		numChannels++
 	}
-
-	//keep calling getAssignmentList until we get them all
-	var nextList []classroom.AcceptedAssignment
-	for hasNext := true; hasNext; {
-		page += 1
-		nextList, err = classroom.GetAssignmentList(client, assignmentID, page, perPage)
-		if err != nil {
-			return classroom.AcceptedAssignmentList{}, err
+	ch := make(chan assignmentList)
+	for page := 1; page <= numChannels; page += 1 {
+		go func(pg int) {
+			response, err := classroom.GetAssignmentList(client, assignmentID, pg, perPage)
+			ch <- assignmentList{
+				assignments: response,
+				Error:       err,
+			}
+		}(page)
+	}
+	assignments := make([]classroom.AcceptedAssignment, 0, theAssignment.Accepted)
+	var hadErr error = nil
+	for page := 1; page <= numChannels; page += 1 {
+		result := <-ch
+		if result.Error != nil {
+			hadErr = result.Error
 		}
-		hasNext = len(nextList) > 0
-		response = append(response, nextList...)
+		assignments = append(assignments, result.assignments...)
 	}
 
-	acceptedAssignmentList := classroom.NewAcceptedAssignmentList(response)
+	if hadErr != nil {
+		return classroom.AcceptedAssignmentList{}, err
+	}
 
-	return acceptedAssignmentList, nil
+	return classroom.NewAcceptedAssignmentList(assignments), nil
 }
