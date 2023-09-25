@@ -102,7 +102,7 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 	cmd.Flags().IntVarP(&assignmentId, "assignment-id", "a", 0, "ID of the assignment")
 	cmd.Flags().StringVarP(&directory, "directory", "d", ".", "Directory to clone into")
 	cmd.Flags().IntVar(&page, "page", 1, "Page number")
-	cmd.Flags().IntVar(&perPage, "per-page", 30, "Number of accepted assignments per page")
+	cmd.Flags().IntVar(&perPage, "per-page", 15, "Number of accepted assignments per page")
 	cmd.Flags().BoolVar(&getAll, "all", true, "Clone All assignments by default")
 
 	return cmd
