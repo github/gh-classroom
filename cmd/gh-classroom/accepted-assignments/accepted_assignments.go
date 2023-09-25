@@ -63,7 +63,7 @@ func NewCmdAcceptedAssignments(f *cmdutil.Factory) *cobra.Command {
 				return
 			}
 
-			acceptedAssignments, err := classroom.ListAcceptedAssignments(client, assignmentId, page, perPage)
+			acceptedAssignments, err := shared.ListAcceptedAssignments(client, assignmentId, page, perPage)
 			if err != nil {
 				log.Fatal(err)
 			}

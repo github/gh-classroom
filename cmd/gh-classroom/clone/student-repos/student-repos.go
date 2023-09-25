@@ -54,9 +54,9 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 			}
 			var acceptedAssignmentList classroom.AcceptedAssignmentList
 			if getAll {
-				acceptedAssignmentList, err = classroom.ListAllAcceptedAssignments(client, assignmentId, perPage)
+				acceptedAssignmentList, err = shared.ListAllAcceptedAssignments(client, assignmentId, perPage)
 			} else {
-				acceptedAssignmentList, err = classroom.ListAcceptedAssignments(client, assignmentId, page, perPage)
+				acceptedAssignmentList, err = shared.ListAcceptedAssignments(client, assignmentId, page, perPage)
 			}
 
 			if err != nil {
