@@ -12,7 +12,7 @@ GitHub Classroom CLI Extension is a powerful and easy-to-use command line tool t
 
 ## Requirements
 
-### Installation 
+### Installation
 - Install [Homebrew](https://brew.sh/)
 - Install the gh cli
   ```bash
@@ -49,6 +49,8 @@ See [SUPPORT](./SUPPORT.md)
 
 ## Additional Resources
 
+- [REST API Documentation](https://docs.github.com/en/rest/classroom/classroom?apiVersion=2022-11-28)
+- [Adding new commands](https://github.blog/2023-09-25-calling-all-teachers-learn-how-to-build-new-commands-on-the-github-classroom-cli/)
 - [Documentation for this extension on docs.github.com](https://docs.github.com/en/education/manage-coursework-with-github-classroom/teach-with-github-classroom/using-github-classroom-with-github-cli)
 - [Classroom](https://classroom.github.com)
 - [About Extensions](https://docs.github.com/en/github-cli/github-cli/creating-github-cli-extensions)
