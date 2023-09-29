@@ -118,18 +118,18 @@ func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage
 
 	//Calculate the number of go channels to create. We will assign 1 channel per page
 	//so we don't put too much pressure on the API all at once
-	theAssignment, err := classroom.GetAssignment(client, assignmentID)
+	assignment, err := classroom.GetAssignment(client, assignmentID)
 	if err != nil {
 		return classroom.AcceptedAssignmentList{}, err
 	}
-	numChannels := (theAssignment.Accepted / perPage)
+	numChannels := math.Ceil(float64(assignment.Accepted) / perPage))
 	//See if we need one more page. This is probably always going to be true
 	//But in the rare case it is not we can save one API call :)
 	if theAssignment.Accepted%perPage > 0 {
 		numChannels++
 	}
 	ch := make(chan assignmentList)
-	for page := 1; page <= numChannels; page += 1 {
+	for page := 1; page <= numChannels; page++ {
 		go func(pg int) {
 			response, err := classroom.GetAssignmentList(client, assignmentID, pg, perPage)
 			ch <- assignmentList{
@@ -140,10 +140,10 @@ func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage
 	}
 	assignments := make([]classroom.AcceptedAssignment, 0, theAssignment.Accepted)
 	var hadErr error = nil
-	for page := 1; page <= numChannels; page += 1 {
+	for page := 1; page <= numChannels; page ++ {
 		result := <-ch
 		if result.Error != nil {
-			hadErr = result.Error
+		return classroom.AcceptedAssignmentList{}, result.Error
 		}
 		assignments = append(assignments, result.assignments...)
 	}
