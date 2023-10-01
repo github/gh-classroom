@@ -2,6 +2,8 @@ package shared
 
 import (
 	"errors"
+	"math"
+	"sync"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/cli/go-gh/pkg/api"
@@ -122,15 +124,15 @@ func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage
 	if err != nil {
 		return classroom.AcceptedAssignmentList{}, err
 	}
-	numChannels := math.Ceil(float64(assignment.Accepted) / perPage))
-	//See if we need one more page. This is probably always going to be true
-	//But in the rare case it is not we can save one API call :)
-	if theAssignment.Accepted%perPage > 0 {
-		numChannels++
-	}
+	tmp := math.Ceil(float64(assignment.Accepted) / float64(perPage))
+	numChannels := int(tmp)
+
 	ch := make(chan assignmentList)
+	var wg sync.WaitGroup
+	wg.Add(numChannels)
 	for page := 1; page <= numChannels; page++ {
 		go func(pg int) {
+			defer wg.Done()
 			response, err := classroom.GetAssignmentList(client, assignmentID, pg, perPage)
 			ch <- assignmentList{
 				assignments: response,
@@ -138,15 +140,18 @@ func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage
 			}
 		}(page)
 	}
-	assignments := make([]classroom.AcceptedAssignment, 0, theAssignment.Accepted)
+
+	assignments := make([]classroom.AcceptedAssignment, 0, assignment.Accepted)
 	var hadErr error = nil
-	for page := 1; page <= numChannels; page ++ {
+	for page := 1; page <= numChannels; page++ {
 		result := <-ch
 		if result.Error != nil {
-		return classroom.AcceptedAssignmentList{}, result.Error
+			return classroom.AcceptedAssignmentList{}, result.Error
 		}
 		assignments = append(assignments, result.assignments...)
 	}
+	wg.Wait()
+	close(ch)
 
 	if hadErr != nil {
 		return classroom.AcceptedAssignmentList{}, err
