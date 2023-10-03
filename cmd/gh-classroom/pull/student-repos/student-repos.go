@@ -57,7 +57,6 @@ func NewCmdStudentReposPull(f *cmdutil.Factory) *cobra.Command {
 			}
 
 			fullPath, err := filepath.Abs(filepath.Join(directory, assignment.Slug+"-submissions"))
-
 			if err != nil {
 				log.Fatal(err)
 			}
