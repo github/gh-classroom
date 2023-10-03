@@ -124,8 +124,7 @@ func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage
 	if err != nil {
 		return classroom.AcceptedAssignmentList{}, err
 	}
-	tmp := math.Ceil(float64(assignment.Accepted) / float64(perPage))
-	numChannels := int(tmp)
+	numChannels := int(math.Ceil(float64(assignment.Accepted) / float64(perPage)))
 
 	ch := make(chan assignmentList)
 	var wg sync.WaitGroup
@@ -140,7 +139,10 @@ func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage
 			}
 		}(page)
 	}
-
+go func() {
+    wg.Wait()
+    close(c)
+}()
 	assignments := make([]classroom.AcceptedAssignment, 0, assignment.Accepted)
 	var hadErr error = nil
 	for page := 1; page <= numChannels; page++ {
@@ -150,8 +152,6 @@ func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage
 		}
 		assignments = append(assignments, result.assignments...)
 	}
-	wg.Wait()
-	close(ch)
 
 	if hadErr != nil {
 		return classroom.AcceptedAssignmentList{}, err
