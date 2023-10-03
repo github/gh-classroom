@@ -139,10 +139,12 @@ func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage
 			}
 		}(page)
 	}
-go func() {
-    wg.Wait()
-    close(c)
-}()
+
+	go func() {
+		wg.Wait()
+		close(ch)
+	}()
+
 	assignments := make([]classroom.AcceptedAssignment, 0, assignment.Accepted)
 	var hadErr error = nil
 	for page := 1; page <= numChannels; page++ {
