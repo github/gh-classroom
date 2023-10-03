@@ -27,7 +27,8 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 		Short: "Clone student repos for an assignment",
 		Long: heredoc.Doc(`Clone student repos for an assignment into a directory.
 
-		By default, the student repos are cloned into the current directory a directory named after the assignment slug. To clone into a different directory, use the --directory flag.
+		By default, the student repos are cloned into the current directory in a directory named after the assignment slug.
+		To clone into a different directory, use the --directory flag.
 
 		If the directory does not exists, it will be created.
 		`),
@@ -89,11 +90,15 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 
 			for _, acceptAssignment := range acceptedAssignmentList.AcceptedAssignments {
 				clonePath := filepath.Join(fullPath, acceptAssignment.Repository.Name())
-				fmt.Printf("Cloning into: %v\n", clonePath)
-				_, _, err = gh.Exec("repo", "clone", acceptAssignment.Repository.FullName, "--", clonePath)
-				if err != nil {
-					log.Fatal(err)
-					return
+				if _, err := os.Stat(clonePath); os.IsNotExist(err) {
+					fmt.Printf("Cloning into: %v\n", clonePath)
+					_, _, err := gh.Exec("repo", "clone", acceptAssignment.Repository.FullName, "--", clonePath)
+					if err != nil {
+						log.Fatal(err)
+						return
+					}
+				} else {
+					fmt.Printf("Skip existing repo: %v use gh classroom pull to get new commits\n", clonePath)
 				}
 			}
 		},
