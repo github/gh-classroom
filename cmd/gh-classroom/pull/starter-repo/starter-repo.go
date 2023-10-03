@@ -62,7 +62,6 @@ func NewCmdStarterRepoPull(f *cmdutil.Factory) *cobra.Command {
 			}
 
 			fullPath, err := filepath.Abs(filepath.Join(directory, assignment.Slug))
-
 			if err != nil {
 				log.Fatal(err)
 			}
