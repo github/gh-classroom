@@ -140,7 +140,6 @@ func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage
 		}(page)
 	}
 
-	go func() {
 		wg.Wait()
 		close(ch)
 	}()
