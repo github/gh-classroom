@@ -128,8 +128,8 @@ func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage
 
 	ch := make(chan assignmentList)
 	var wg sync.WaitGroup
-	wg.Add(numChannels)
 	for page := 1; page <= numChannels; page++ {
+		wg.Add(1)
 		go func(pg int) {
 			defer wg.Done()
 			response, err := classroom.GetAssignmentList(client, assignmentID, pg, perPage)
@@ -140,19 +140,26 @@ func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage
 		}(page)
 	}
 
-		wg.Wait()
-		close(ch)
-	}()
-
+	var mu sync.Mutex
 	assignments := make([]classroom.AcceptedAssignment, 0, assignment.Accepted)
 	var hadErr error = nil
 	for page := 1; page <= numChannels; page++ {
-		result := <-ch
-		if result.Error != nil {
-			return classroom.AcceptedAssignmentList{}, result.Error
-		}
-		assignments = append(assignments, result.assignments...)
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			result := <-ch
+			if result.Error != nil {
+				hadErr = result.Error
+			} else {
+				mu.Lock()
+				assignments = append(assignments, result.assignments...)
+				mu.Unlock()
+			}
+		}()
 	}
+
+	wg.Wait()
+	close(ch)
 
 	if hadErr != nil {
 		return classroom.AcceptedAssignmentList{}, err
