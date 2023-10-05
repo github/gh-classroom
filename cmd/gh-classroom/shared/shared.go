@@ -2,6 +2,8 @@ package shared
 
 import (
 	"errors"
+	"math"
+	"sync"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/cli/go-gh/pkg/api"
@@ -109,30 +111,59 @@ func ListAcceptedAssignments(client api.RESTClient, assignmentID int, page int, 
 	return acceptedAssignmentList, nil
 }
 
+type assignmentList struct {
+	assignments []classroom.AcceptedAssignment
+	Error       error
+}
+
 func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage int) (classroom.AcceptedAssignmentList, error) {
-	var page = 1
-	response, err := classroom.GetAssignmentList(client, assignmentID, page, perPage)
+
+	//Calculate the number of go channels to create. We will assign 1 channel per page
+	//so we don't put too much pressure on the API all at once
+	assignment, err := classroom.GetAssignment(client, assignmentID)
 	if err != nil {
 		return classroom.AcceptedAssignmentList{}, err
 	}
+	numChannels := int(math.Ceil(float64(assignment.Accepted) / float64(perPage)))
 
-	if len(response) == 0 {
-		return classroom.AcceptedAssignmentList{}, nil
+	ch := make(chan assignmentList)
+	var wg sync.WaitGroup
+	for page := 1; page <= numChannels; page++ {
+		wg.Add(1)
+		go func(pg int) {
+			defer wg.Done()
+			response, err := classroom.GetAssignmentList(client, assignmentID, pg, perPage)
+			ch <- assignmentList{
+				assignments: response,
+				Error:       err,
+			}
+		}(page)
 	}
 
-	//keep calling getAssignmentList until we get them all
-	var nextList []classroom.AcceptedAssignment
-	for hasNext := true; hasNext; {
-		page += 1
-		nextList, err = classroom.GetAssignmentList(client, assignmentID, page, perPage)
-		if err != nil {
-			return classroom.AcceptedAssignmentList{}, err
-		}
-		hasNext = len(nextList) > 0
-		response = append(response, nextList...)
+	var mu sync.Mutex
+	assignments := make([]classroom.AcceptedAssignment, 0, assignment.Accepted)
+	var hadErr error = nil
+	for page := 1; page <= numChannels; page++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			result := <-ch
+			if result.Error != nil {
+				hadErr = result.Error
+			} else {
+				mu.Lock()
+				assignments = append(assignments, result.assignments...)
+				mu.Unlock()
+			}
+		}()
 	}
 
-	acceptedAssignmentList := classroom.NewAcceptedAssignmentList(response)
+	wg.Wait()
+	close(ch)
 
-	return acceptedAssignmentList, nil
+	if hadErr != nil {
+		return classroom.AcceptedAssignmentList{}, err
+	}
+
+	return classroom.NewAcceptedAssignmentList(assignments), nil
 }

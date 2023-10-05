@@ -96,8 +96,29 @@ func TestListAcceptedAssignments(t *testing.T) {
 }
 
 func TestListAllAcceptedAssignments(t *testing.T) {
+	//This test should be OK however be aware that gock is not fully thread safe
+	//https://github.com/h2non/gock#race-conditions
+	//So if this test has intermittent failures this is the first place to look :)
 	t.Setenv("GITHUB_TOKEN", "999")
 	defer gock.Off()
+
+	gock.New("https://api.github.com").
+		Get("/assignments/1").
+		Reply(200).
+		JSON(`{"id": 1,
+		"title": "Assignment 1",
+		"description": "This is the first assignment",
+		"due_date": "2018-01-01",
+		"accepted": 2,
+		"classroom": {
+			"id": 1,
+			"name":      "Classroom Name"
+		},
+		"starter_code_repository": {
+			"id": 1,
+			"full_name": "org1/starter-code-repo"
+		}
+	}`)
 
 	gock.New("https://api.github.com").
 		Get("/assignments/1/accepted_assignments").
