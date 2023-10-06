@@ -88,11 +88,13 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 				}
 			}
 
+			totalCloned := 0
 			for _, acceptAssignment := range acceptedAssignmentList.AcceptedAssignments {
 				clonePath := filepath.Join(fullPath, acceptAssignment.Repository.Name())
 				if _, err := os.Stat(clonePath); os.IsNotExist(err) {
 					fmt.Printf("Cloning into: %v\n", clonePath)
 					_, _, err := gh.Exec("repo", "clone", acceptAssignment.Repository.FullName, "--", clonePath)
+					totalCloned++
 					if err != nil {
 						log.Fatal(err)
 						return
@@ -102,10 +104,10 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 				}
 			}
 			if getAll {
-				fmt.Printf("Cloned %v repos.\n", len(acceptedAssignmentList.AcceptedAssignments))
+				fmt.Printf("Cloned %v repos.\n", totalCloned)
 			} else {
 				numPages, _ := shared.NumberOfAcceptedAssignmentsAndPages(client, assignmentId, perPage)
-				fmt.Printf("Cloned %v repos. There are %v more pages of repos to clone.\n", len(acceptedAssignmentList.AcceptedAssignments), numPages-page)
+				fmt.Printf("Cloned %v repos. There are %v more pages of repos to clone.\n", totalCloned, numPages-page)
 			}
 
 		},
