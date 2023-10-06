@@ -109,7 +109,6 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 				numPages, _ := shared.NumberOfAcceptedAssignmentsAndPages(client, assignmentId, perPage)
 				fmt.Printf("Cloned %v repos. There are %v more pages of repos to clone.\n", totalCloned, numPages-page)
 			}
-
 		},
 	}
 
