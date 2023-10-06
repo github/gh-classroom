@@ -101,6 +101,13 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 					fmt.Printf("Skip existing repo: %v use gh classroom pull to get new commits\n", clonePath)
 				}
 			}
+			if getAll {
+				fmt.Printf("Cloned %v repos.\n", len(acceptedAssignmentList.AcceptedAssignments))
+			} else {
+				numPages, _ := shared.NumberOfAcceptedAssignmentsAndPages(client, assignmentId, perPage)
+				fmt.Printf("Cloned %v repos. There are %v more pages of repos to clone.\n", len(acceptedAssignmentList.AcceptedAssignments), numPages-page)
+			}
+
 		},
 	}
 

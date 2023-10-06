@@ -2,6 +2,7 @@ package shared
 
 import (
 	"errors"
+	"log"
 	"math"
 	"sync"
 
@@ -97,6 +98,18 @@ func PromptForAssignment(client api.RESTClient, classroomId int) (assignment cla
 	return optionMap[answer.Assignment], nil
 }
 
+// Get the total number of accepted assignments and the number of pages necessary to get them all
+// Calculate the number of pages necessary to get all of the assignments with a given perPage
+func NumberOfAcceptedAssignmentsAndPages(client api.RESTClient, assignmentID int, perPage int) (numPages, totalAccepted int) {
+	assignment, err := classroom.GetAssignment(client, assignmentID)
+	if err != nil {
+		log.Fatal(err)
+	}
+	numPages = int(math.Ceil(float64(assignment.Accepted) / float64(perPage)))
+	totalAccepted = assignment.Accepted
+	return
+}
+
 func ListAcceptedAssignments(client api.RESTClient, assignmentID int, page int, perPage int) (classroom.AcceptedAssignmentList, error) {
 	response, err := classroom.GetAssignmentList(client, assignmentID, page, perPage)
 	if err != nil {
@@ -118,17 +131,11 @@ type assignmentList struct {
 
 func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage int) (classroom.AcceptedAssignmentList, error) {
 
-	//Calculate the number of go channels to create. We will assign 1 channel per page
-	//so we don't put too much pressure on the API all at once
-	assignment, err := classroom.GetAssignment(client, assignmentID)
-	if err != nil {
-		return classroom.AcceptedAssignmentList{}, err
-	}
-	numChannels := int(math.Ceil(float64(assignment.Accepted) / float64(perPage)))
+	numPages, totalAccepted := NumberOfAcceptedAssignmentsAndPages(client, assignmentID, perPage)
 
 	ch := make(chan assignmentList)
 	var wg sync.WaitGroup
-	for page := 1; page <= numChannels; page++ {
+	for page := 1; page <= numPages; page++ {
 		wg.Add(1)
 		go func(pg int) {
 			defer wg.Done()
@@ -141,9 +148,9 @@ func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage
 	}
 
 	var mu sync.Mutex
-	assignments := make([]classroom.AcceptedAssignment, 0, assignment.Accepted)
+	assignments := make([]classroom.AcceptedAssignment, 0, totalAccepted)
 	var hadErr error = nil
-	for page := 1; page <= numChannels; page++ {
+	for page := 1; page <= numPages; page++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -162,7 +169,7 @@ func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage
 	close(ch)
 
 	if hadErr != nil {
-		return classroom.AcceptedAssignmentList{}, err
+		return classroom.AcceptedAssignmentList{}, hadErr
 	}
 
 	return classroom.NewAcceptedAssignmentList(assignments), nil
