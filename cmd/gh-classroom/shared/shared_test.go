@@ -8,6 +8,41 @@ import (
 	"gopkg.in/h2non/gock.v1"
 )
 
+func TestNumberOfAcceptedAssignmentsAndPages(t *testing.T) {
+	t.Setenv("GITHUB_TOKEN", "999")
+	defer gock.Off()
+
+	gock.New("https://api.github.com").
+		Get("/assignments/1").
+		Reply(200).
+		JSON(`{"id": 1,
+		"title": "Assignment 1",
+		"description": "This is the first assignment",
+		"due_date": "2018-01-01",
+		"accepted": 2,
+		"classroom": {
+			"id": 1,
+			"name":      "Classroom Name"
+		},
+		"starter_code_repository": {
+			"id": 1,
+			"full_name": "org1/starter-code-repo"
+		}
+	}`)
+	client, err := gh.RESTClient(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	numPages, totalAccepted := NumberOfAcceptedAssignmentsAndPages(client, 1, 1)
+	assert.Equal(t, 2, numPages)
+	assert.Equal(t, 2, totalAccepted)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestListAcceptedAssignments(t *testing.T) {
 	t.Setenv("GITHUB_TOKEN", "999")
 	defer gock.Off()
