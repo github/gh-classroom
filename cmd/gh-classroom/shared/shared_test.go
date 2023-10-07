@@ -1,6 +1,7 @@
 package shared
 
 import (
+	"sort"
 	"testing"
 
 	"github.com/cli/go-gh"
@@ -226,6 +227,12 @@ func TestListAllAcceptedAssignments(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	//Due to ListAllAcceptedAssignments using channels we can not guarantee the order of the results
+	//so we need to sort the results before we can compare them to the expected results
+	sort.Slice(actual.AcceptedAssignments, func(i, j int) bool {
+		return actual.AcceptedAssignments[i].Id < actual.AcceptedAssignments[j].Id
+	})
 
 	assert.Equal(t, 2, actual.Count)
 	assert.Equal(t, 1, actual.AcceptedAssignments[0].Id)
