@@ -1,7 +1,6 @@
 ## Contributing
 
-[fork]: https://github.com/github/gh-classroom/fork
-[pr]: https://github.com/github/gh-classroom/compare
+[pr]: https://github.com/education/autograding/compare
 [style]: https://github.com/github/gh-classroom/blob/main/.golangci.yaml
 [release-docs]: https://help.github.com/articles/github-terms-of-service/#6-contributions-under-repository-license
 [good-commit-msg]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
@@ -12,22 +11,12 @@ Contributions to this project are [released][release-docs] to the public under t
 
 Please note that this project is released with a [Contributor Code of Conduct](./CODE-OF-CONDUCT.md). By participating in this project you agree to abide by its terms.
 
-## Prerequisites for running and testing code
-
-These are one time installations required to be able to test your changes locally as part of the pull request (PR) submission process.
-
-1. install Go [through download](https://go.dev/doc/install) | [through Homebrew](https://formulae.brew.sh/formula/go)
-1. [install golangci-lint](https://golangci-lint.run/usage/install/#local-installation)
-
 ## Submitting a pull request
 
-1. [Fork][fork] and clone the repository
-1. Configure and install the dependencies: `go mod tidy`
-1. Make sure the tests pass on your machine: `go test -v ./...`
-1. Make sure linter passes on your machine: `golangci-lint run`
+1. Clone the repository
 1. Create a new branch: `git checkout -b my-branch-name`
 1. Make your change, add tests, and make sure the tests and linter still pass
-1. Push to your fork and [submit a pull request][pr]
+1. [submit a pull request][pr]
 1. Please be patient while waiting for your pull request to be reviewed and merged.
 
 Here are a few things you can do that will increase the likelihood of your pull request being accepted:
