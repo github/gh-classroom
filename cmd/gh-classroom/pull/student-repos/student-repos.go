@@ -71,9 +71,17 @@ func NewCmdStudentReposPull(f *cmdutil.Factory) *cobra.Command {
 				log.Fatal(err)
 			}
 
-			entries, err := os.ReadDir(fullPath)
+			all_entries, err := os.ReadDir(fullPath)
 			if err != nil {
 				log.Fatal(err)
+			}
+
+			//filter entries to only directories
+			var entries []os.DirEntry
+			for _, r := range all_entries {
+				if r.IsDir() {
+					entries = append(entries, r)
+				}
 			}
 
 			for _, r := range entries {
