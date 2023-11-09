@@ -71,20 +71,15 @@ func NewCmdStudentReposPull(f *cmdutil.Factory) *cobra.Command {
 				log.Fatal(err)
 			}
 
-			all_entries, err := os.ReadDir(fullPath)
+			entries, err := os.ReadDir(fullPath)
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			//filter entries to only directories
-			var entries []os.DirEntry
-			for _, r := range all_entries {
-				if r.IsDir() {
-					entries = append(entries, r)
-				}
-			}
-
 			for _, r := range entries {
+				if !r.IsDir() {
+					continue
+				}
 				clonePath := filepath.Join(fullPath, r.Name())
 				fmt.Printf("Pulling repo: %v\n", clonePath)
 				err = os.Chdir(clonePath)
