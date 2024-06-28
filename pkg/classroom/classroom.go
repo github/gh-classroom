@@ -100,6 +100,14 @@ type GitHubOrganization struct {
 }
 
 func NewAssignmentList(assignments []Assignment) AssignmentList {
+	if len(assignments) == 0 {
+    return AssignmentList{
+			Assignments: []Assignment{},
+    	Classroom:   Classroom{},
+    	Count:       0,
+		}
+	}
+
 	classroom := assignments[0].Classroom
 	count := len(assignments)
 
@@ -111,6 +119,15 @@ func NewAssignmentList(assignments []Assignment) AssignmentList {
 }
 
 func NewAcceptedAssignmentList(assignments []AcceptedAssignment) AcceptedAssignmentList {
+	if len(assignments) == 0 {
+		return AcceptedAssignmentList{
+			AcceptedAssignments: []AcceptedAssignment{},
+			Classroom:           Classroom{},
+			Assignment:          Assignment{},
+			Count:               0,
+		}
+	}
+
 	classroom := assignments[0].Assignment.Classroom
 	assignment := assignments[0].Assignment
 	count := len(assignments)
