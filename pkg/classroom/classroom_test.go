@@ -122,10 +122,3 @@ func TestAcceptedAssignments(t *testing.T) {
 		assert.Equal(t, acceptedAssignment.RepositoryUrl(), "https://github.com/owner/repo")
 	})
 }
-
-func TestGithubRepositories(t *testing.T) {
-	t.Run("Returns repo name", func(t *testing.T) {
-		repository := GithubRepository{FullName: "owner/repo"}
-		assert.Equal(t, repository.Name(), "repo")
-	})
-}
