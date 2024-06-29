@@ -13,6 +13,7 @@ import (
 	"github.com/github/gh-classroom/cmd/gh-classroom/shared"
 	"github.com/github/gh-classroom/pkg/classroom"
 	"github.com/spf13/cobra"
+	"github.com/github/gh-classroom/cmd/gh-classroom/clone/utils"
 )
 
 func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
@@ -90,17 +91,24 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 
 			totalCloned := 0
 			for _, acceptAssignment := range acceptedAssignmentList.AcceptedAssignments {
-				clonePath := filepath.Join(fullPath, acceptAssignment.Repository.Name())
-				if _, err := os.Stat(clonePath); os.IsNotExist(err) {
-					fmt.Printf("Cloning into: %v\n", clonePath)
-					_, _, err := gh.Exec("repo", "clone", acceptAssignment.Repository.FullName, "--", clonePath)
-					totalCloned++
-					if err != nil {
-						log.Fatal(err)
-						return
-					}
+				clonePath := filepath.Join(fullPath, acceptAssignment.Repository.Name)
+				_, err := CloneRepository(clonePath, acceptAssignment.Repository.FullName, gh)
+				if err != nil {
+						errMsg := fmt.Sprintf("Error cloning %s: %v", acceptAssignment.Repository.FullName, err)
+						fmt.Println(errMsg)
+						cloneErrors = append(cloneErrors, errMsg)
+						continue // Continue with the next iteration
+				}
+				totalCloned++
+			}
+			if len(cloneErrors) > 0 {
+				fmt.Println("Some repositories failed to clone.")
+				if !verbose {
+						fmt.Println("Run with --verbose flag to see more details")
 				} else {
-					fmt.Printf("Skip existing repo: %v use gh classroom pull to get new commits\n", clonePath)
+						for _, errMsg := range cloneErrors {
+								fmt.Println(errMsg)
+						}
 				}
 			}
 			if getAll {
@@ -117,6 +125,7 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 	cmd.Flags().IntVar(&page, "page", 1, "Page number")
 	cmd.Flags().IntVar(&perPage, "per-page", 15, "Number of accepted assignments per page")
 	cmd.Flags().BoolVar(&getAll, "all", true, "Clone All assignments by default")
+	cmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose error output")
 
 	return cmd
 }
