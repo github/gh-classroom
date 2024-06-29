@@ -42,6 +42,11 @@ func TestNewAssignmentList(t *testing.T) {
 
 		assert.Equal(t, assignmentList.Classroom.Name, "The Classroom")
 	})
+
+	t.Run("returns empty list when there are no assignments", func(t *testing.T) {
+		assignmentList := NewAssignmentList([]Assignment{})
+		assert.Equal(t, assignmentList.Count, 0)
+	})
 }
 
 func TestNewAcceptedAssignmentList(t *testing.T) {
@@ -91,6 +96,11 @@ func TestNewAcceptedAssignmentList(t *testing.T) {
 		assignmentList := NewAcceptedAssignmentList(acceptedAssignments)
 
 		assert.Equal(t, assignmentList.Assignment.Title, "The Assignment")
+	})
+
+	t.Run("it returns an empty list when there are no accepted assignments", func(t *testing.T) {
+		assignmentList := NewAcceptedAssignmentList([]AcceptedAssignment{})
+		assert.Equal(t, assignmentList.Count, 0)
 	})
 }
 
