@@ -1,7 +1,6 @@
 package utils
 
 import (
-    "io/ioutil"
     "os"
     "testing"
     "bytes"
@@ -11,7 +10,7 @@ import (
 )
 
 func TestCloneRepository(t *testing.T) {
-    tmpDir, err := ioutil.TempDir("", "cloneTest")
+    tmpDir, err := os.MkdirTemp("", "cloneTest")
     if err != nil {
         t.Fatalf("Failed to create temp directory: %v", err)
     }
@@ -65,7 +64,7 @@ func TestCloneRepository(t *testing.T) {
         t.Run(tt.name, func(t *testing.T) {
             if tt.name == "successful clone" {
                 fmt.Println("Running successful clone test")
-                tmpDir, err := ioutil.TempDir("", "cloneTest")
+                tmpDir, err := os.MkdirTemp("", "cloneTest")
                 if err != nil {
                     t.Fatalf("Failed to create temp directory: %v", err)
                 }
