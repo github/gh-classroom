@@ -22,6 +22,7 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 	var page int
 	var perPage int
 	var getAll bool
+	var verbose bool
 
 	cmd := &cobra.Command{
 		Use:   "student-repos",
@@ -90,9 +91,10 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 			}
 
 			totalCloned := 0
+			cloneErrors := []string{}
 			for _, acceptAssignment := range acceptedAssignmentList.AcceptedAssignments {
 				clonePath := filepath.Join(fullPath, acceptAssignment.Repository.Name)
-				_, err := CloneRepository(clonePath, acceptAssignment.Repository.FullName, gh)
+				err := utils.CloneRepository(clonePath, acceptAssignment.Repository.FullName, gh.Exec)
 				if err != nil {
 						errMsg := fmt.Sprintf("Error cloning %s: %v", acceptAssignment.Repository.FullName, err)
 						fmt.Println(errMsg)

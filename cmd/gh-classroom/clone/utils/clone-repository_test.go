@@ -10,16 +10,6 @@ import (
     "path/filepath"
 )
 
-// MockGitHubExec is a mock of the GitHubExec interface for testing.
-type MockGitHubExec struct {
-    ExecFunc func(args ...string) (stdout, stderr bytes.Buffer, err error)
-}
-
-func (m *MockGitHubExec) Exec(args ...string) (stdout, stderr bytes.Buffer, err error) {
-    return m.ExecFunc(args...)
-}
-
-
 func TestCloneRepository(t *testing.T) {
     tmpDir, err := ioutil.TempDir("", "cloneTest")
     if err != nil {
@@ -29,7 +19,7 @@ func TestCloneRepository(t *testing.T) {
     // Test cases
     tests := []struct {
         name       string
-        execMock   *MockGitHubExec
+        execMock   GitHubExec
         clonePath  string
         repoFullName string
         wantErr    bool
@@ -37,12 +27,10 @@ func TestCloneRepository(t *testing.T) {
     }{
         {
             name: "successful clone",
-            execMock: &MockGitHubExec{
-                ExecFunc: func(args ...string) (stdout bytes.Buffer, stderr bytes.Buffer, err error) {
+            execMock: func(args ...string) (stdout bytes.Buffer, stderr bytes.Buffer, err error) {
                     var stdoutBuf, stderrBuf bytes.Buffer
                     stdoutBuf.Write([]byte("your string here"))
                     return stdoutBuf, stderrBuf, nil
-                },
             },
             clonePath: "", // Will be set to a temp directory in the test
             repoFullName: "example/repo",
@@ -50,11 +38,9 @@ func TestCloneRepository(t *testing.T) {
         },
         {
             name: "clone failure",
-            execMock: &MockGitHubExec{
-                ExecFunc: func(args ...string) (stdout bytes.Buffer, stderr bytes.Buffer, err error) {
+            execMock: func(args ...string) (stdout bytes.Buffer, stderr bytes.Buffer, err error) {
                     var stdoutBuf, stderrBuf bytes.Buffer
                     return stdoutBuf, stderrBuf, errors.New("clone error")
-                },
             },
             clonePath:  filepath.Join(tmpDir, "repo"),
             repoFullName: "example/repo",
@@ -63,11 +49,9 @@ func TestCloneRepository(t *testing.T) {
         },
         {
             name: "repository already exists",
-            execMock: &MockGitHubExec{
-                ExecFunc: func(args ...string) (stdout bytes.Buffer, stderr bytes.Buffer, err error) {
+            execMock: func(args ...string) (stdout bytes.Buffer, stderr bytes.Buffer, err error) {
                     var stdoutBuf, stderrBuf bytes.Buffer
                     return stdoutBuf, stderrBuf, nil
-                },
             },
             clonePath:  "./repo", // Current directory always exists
             repoFullName: "example/repo",
