@@ -101,10 +101,10 @@ type GitHubOrganization struct {
 
 func NewAssignmentList(assignments []Assignment) AssignmentList {
 	if len(assignments) == 0 {
-    return AssignmentList{
+		return AssignmentList{
 			Assignments: []Assignment{},
-    	Classroom:   Classroom{},
-    	Count:       0,
+			Classroom:   Classroom{},
+			Count:       0,
 		}
 	}
 
