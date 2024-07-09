@@ -34,6 +34,7 @@ func TestGetAllFlag(t *testing.T) {
         {"Default", []string{}, true},
         {"PerPage Set", []string{"--per-page", "20"}, true},
         {"Page Set", []string{"--page", "2"}, false},
+        {"Page Set to 1", []string{"--page", "1"}, false},
         {"Page and PerPage Set", []string{"--page", "2", "--per-page", "20"}, false},
     }
 
