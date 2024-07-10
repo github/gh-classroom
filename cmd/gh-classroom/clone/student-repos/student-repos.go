@@ -53,6 +53,10 @@ func NewCmdStudentRepo(f *cmdutil.Factory) *cobra.Command {
 					log.Fatal(err)
 				}
 			}
+			
+			// Default getAll to true unless page is set differently from default.
+			getAll = !cmd.Flags().Changed("page")
+
 			var acceptedAssignmentList classroom.AcceptedAssignmentList
 			if getAll {
 				acceptedAssignmentList, err = shared.ListAllAcceptedAssignments(client, assignmentId, perPage)
