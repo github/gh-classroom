@@ -61,7 +61,6 @@ type GithubRepository struct {
 	HtmlUrl       string `json:"html_url"`
 	NodeId        string `json:"node_id"`
 	Private       bool   `json:"private"`
-	DefaultBranch string `json:"default_branch"`
 }
 
 type Student struct {
