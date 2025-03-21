@@ -8,6 +8,7 @@ ownership:
   team_slack: edu-classroom
   exec_sponsor: nerdneha
   product_manager: ericdrosado
+  maintainer: anjuan
   repo: https://github.com/github/gh-classroom
   sev1:
     issue: https://github.com/github/gh-classroom/issues
