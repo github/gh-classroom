@@ -64,7 +64,7 @@ With "--web", open the classroom in a browser instead.`,
 func OpenInBrowser(url string) {
 	term := term.FromEnv()
 	io := iostreams.System()
-	c := iostreams.NewColorScheme(true, true, true)
+	c := io.ColorScheme()
 	if term.IsTerminalOutput() {
 		fmt.Fprintln(io.ErrOut, c.Yellow("\nOpening classroom in your browser...\n"))
 	}

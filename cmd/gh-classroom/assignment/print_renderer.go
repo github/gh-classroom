@@ -18,7 +18,7 @@ func RenderModel(assignment classroom.Assignment, out io.Writer) {
 }
 
 func printClassroom(model classroom.Classroom, stdout io.Writer) {
-	c := iostreams.NewColorScheme(true, true, true)
+	c := iostreams.System().ColorScheme()
 	fmt.Fprintln(stdout, c.Blue("CLASSROOM INFORMATION"))
 	fmt.Fprintln(stdout, c.Yellow("ID:"), c.Green(strconv.Itoa(model.Id)))
 	fmt.Fprintln(stdout, c.Yellow("Name:"), c.Green(model.Name))
@@ -26,7 +26,7 @@ func printClassroom(model classroom.Classroom, stdout io.Writer) {
 }
 
 func printAssigment(assignment classroom.Assignment, out io.Writer) {
-	c := iostreams.NewColorScheme(true, true, true)
+	c := iostreams.System().ColorScheme()
 	fmt.Fprintln(out, c.Blue("ASSIGNMENT INFORMATION"))
 	fmt.Fprintln(out, c.Yellow("ID:"), c.Green(strconv.Itoa(assignment.Id)))
 	fmt.Fprintln(out, c.Yellow("Title:"), c.Green(assignment.Title))

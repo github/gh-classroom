@@ -24,7 +24,7 @@ func NewCmdAssignment(f *cmdutil.Factory) *cobra.Command {
 		Use:     "assignment",
 		Example: `$ gh classroom assignment -a 4876`,
 		Short:   "Show the details of an assignment",
-		Long: "Display the details of an assignment",
+		Long:    "Display the details of an assignment",
 		Run: func(cmd *cobra.Command, args []string) {
 			client, err := api.DefaultRESTClient()
 
@@ -71,7 +71,7 @@ func NewCmdAssignment(f *cmdutil.Factory) *cobra.Command {
 func OpenInBrowser(url string) {
 	term := term.FromEnv()
 	io := iostreams.System()
-	c := iostreams.NewColorScheme(true, true, true)
+	c := io.ColorScheme()
 	if term.IsTerminalOutput() {
 		fmt.Fprintln(io.ErrOut, c.Yellow("\nOpening assigment in your browser...\n"))
 	}

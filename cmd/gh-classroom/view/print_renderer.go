@@ -2,10 +2,11 @@ package view
 
 import (
 	"fmt"
-	"github.com/cli/cli/v2/pkg/iostreams"
-	"github.com/github/gh-classroom/pkg/classroom"
 	"io"
 	"strconv"
+
+	"github.com/cli/cli/v2/pkg/iostreams"
+	"github.com/github/gh-classroom/pkg/classroom"
 )
 
 func RenderModel(model classroom.Classroom, stdout io.Writer) {
@@ -16,7 +17,7 @@ func RenderModel(model classroom.Classroom, stdout io.Writer) {
 }
 
 func printClassroom(model classroom.Classroom, stdout io.Writer) {
-	c := iostreams.NewColorScheme(true, true, true)
+	c := iostreams.System().ColorScheme()
 	fmt.Fprintln(stdout, c.Blue("CLASSROOM INFORMATION"))
 	fmt.Fprintln(stdout, c.Yellow("ID:"), c.Green(strconv.Itoa(model.Id)))
 	fmt.Fprintln(stdout, c.Yellow("Name:"), c.Green(model.Name))
@@ -24,7 +25,7 @@ func printClassroom(model classroom.Classroom, stdout io.Writer) {
 }
 
 func printOrganizationInfo(organization classroom.GitHubOrganization, stdout io.Writer) {
-	c := iostreams.NewColorScheme(true, true, true)
+	c := iostreams.System().ColorScheme()
 	fmt.Fprintln(stdout, c.Blue("GITHUB INFORMATION"))
 	fmt.Fprintln(stdout, c.Yellow("Login:"), c.Green(organization.Login))
 	fmt.Fprintln(stdout, c.Yellow("Organization URL"), c.Green(organization.HtmlUrl))
