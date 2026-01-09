@@ -23,7 +23,7 @@ func PromptForClassroom(client *api.RESTClient) (classroomId classroom.Classroom
 	}
 
 	if len(classrooms) == 0 {
-		return classroom.Classroom{}, errors.New("No classrooms found.")
+		return classroom.Classroom{}, errors.New("no classrooms found")
 	}
 
 	optionMap := make(map[string]classroom.Classroom)
@@ -72,7 +72,7 @@ func PromptForAssignment(client *api.RESTClient, classroomId int) (assignment cl
 	}
 
 	if len(options) == 0 {
-		return classroom.Assignment{}, errors.New("No assignments found for this classroom.")
+		return classroom.Assignment{}, errors.New("no assignments found for this classroom")
 	}
 
 	var qs = []*survey.Question{

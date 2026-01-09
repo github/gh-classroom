@@ -52,18 +52,17 @@ func NewCmdAssignments(f *cmdutil.Factory) *cobra.Command {
 				}
 			}
 
-
 			assignmentList, err := classroom.ListAssignments(client, classroomId, page, perPage)
 
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			fmt.Fprintln(cmd.OutOrStdout(), assignmentListSummary(cr, assignmentList, cs))
+			_, _ = fmt.Fprintln(cmd.OutOrStdout(), assignmentListSummary(cr, assignmentList, cs))
 
 			if web {
 				if term.IsTerminalOutput() {
-					fmt.Fprintln(io.ErrOut, "Opening in your browser.")
+					_, _ = fmt.Fprintln(io.ErrOut, "Opening in your browser.")
 				}
 				browser := browser.New("", cmd.OutOrStdout(), cmd.OutOrStderr())
 				err := browser.Browse(assignmentList.Url())
@@ -90,7 +89,7 @@ func NewCmdAssignments(f *cmdutil.Factory) *cobra.Command {
 			for _, assignment := range assignmentList.Assignments {
 				t.AddField(cs.Green(strconv.Itoa(assignment.Id)), tableprinter.WithTruncate(nil))
 				t.AddField(assignment.Title, tableprinter.WithTruncate(nil))
-				t.AddField(cs.Gray(strconv.FormatBool(assignment.PublicRepo)), tableprinter.WithTruncate(nil))
+				t.AddField(cs.Muted(strconv.FormatBool(assignment.PublicRepo)), tableprinter.WithTruncate(nil))
 				t.AddField(assignment.AssignmentType, tableprinter.WithTruncate(nil))
 				t.AddField(assignment.Deadline, tableprinter.WithTruncate(nil))
 				t.AddField(assignment.Editor, tableprinter.WithTruncate(nil))
