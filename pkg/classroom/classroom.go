@@ -141,11 +141,11 @@ func NewAcceptedAssignmentList(assignments []AcceptedAssignment) AcceptedAssignm
 }
 
 func (a AssignmentList) Url() string {
-	return fmt.Sprintf(a.Classroom.Url)
+	return a.Classroom.Url
 }
 
 func (a Assignment) Url() string {
-	return fmt.Sprintf(a.Classroom.Url+"/assignments/%v", a.Slug)
+	return fmt.Sprintf("%s/assignments/%s", a.Classroom.Url, a.Slug)
 }
 
 func (a Assignment) IsGroupAssignment() bool {
