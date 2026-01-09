@@ -7,9 +7,9 @@ import (
 	"os"
 
 	"github.com/cli/cli/v2/pkg/cmdutil"
-	"github.com/cli/go-gh"
-	"github.com/cli/go-gh/pkg/browser"
-	"github.com/cli/go-gh/pkg/term"
+	"github.com/cli/go-gh/v2/pkg/api"
+	"github.com/cli/go-gh/v2/pkg/browser"
+	"github.com/cli/go-gh/v2/pkg/term"
 	"github.com/github/gh-classroom/cmd/gh-classroom/shared"
 	"github.com/github/gh-classroom/pkg/classroom"
 	"github.com/spf13/cobra"
@@ -30,7 +30,7 @@ func NewCmdAssignmentGrades(f *cmdutil.Factory) *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			term := term.FromEnv()
 
-			client, err := gh.RESTClient(nil)
+			client, err := api.DefaultRESTClient()
 			var assignment classroom.Assignment
 			if err != nil {
 				log.Fatal(err)

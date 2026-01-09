@@ -4,7 +4,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/cli/go-gh"
+	"github.com/cli/go-gh/v2/pkg/api"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v1"
 )
@@ -30,7 +30,7 @@ func TestNumberOfAcceptedAssignmentsAndPages(t *testing.T) {
 			"full_name": "org1/starter-code-repo"
 		}
 	}`)
-	client, err := gh.RESTClient(nil)
+	client, err := api.DefaultRESTClient()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -104,7 +104,7 @@ func TestListAcceptedAssignments(t *testing.T) {
 		}
 	}]`)
 
-	client, err := gh.RESTClient(nil)
+	client, err := api.DefaultRESTClient()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -217,7 +217,7 @@ func TestListAllAcceptedAssignments(t *testing.T) {
 		Reply(200).
 		JSON(`[]`)
 
-	client, err := gh.RESTClient(nil)
+	client, err := api.DefaultRESTClient()
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -6,9 +6,9 @@ import (
 
 	"github.com/cli/cli/v2/pkg/cmdutil"
 	"github.com/cli/cli/v2/pkg/iostreams"
-	"github.com/cli/go-gh"
-	"github.com/cli/go-gh/pkg/browser"
-	"github.com/cli/go-gh/pkg/term"
+	"github.com/cli/go-gh/v2/pkg/api"
+	"github.com/cli/go-gh/v2/pkg/browser"
+	"github.com/cli/go-gh/v2/pkg/term"
 	"github.com/github/gh-classroom/cmd/gh-classroom/shared"
 	"github.com/github/gh-classroom/pkg/classroom"
 	"github.com/spf13/cobra"
@@ -26,7 +26,7 @@ func NewCmdAssignment(f *cmdutil.Factory) *cobra.Command {
 		Short:   "Show the details of an assignment",
 		Long: "Display the details of an assignment",
 		Run: func(cmd *cobra.Command, args []string) {
-			client, err := gh.RESTClient(nil)
+			client, err := api.DefaultRESTClient()
 
 			if err != nil {
 				log.Fatal(err)
