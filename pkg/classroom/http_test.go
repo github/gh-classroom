@@ -3,7 +3,7 @@ package classroom
 import (
 	"testing"
 
-	"github.com/cli/go-gh"
+	"github.com/cli/go-gh/v2/pkg/api"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v1"
 )
@@ -25,7 +25,7 @@ func TestListAssignments(t *testing.T) {
 		}
 	}]`)
 
-	client, err := gh.RESTClient(nil)
+	client, err := api.DefaultRESTClient()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -52,7 +52,7 @@ func TestListClassrooms(t *testing.T) {
 		"name": "Classroom Name"
 	}]`)
 
-	client, err := gh.RESTClient(nil)
+	client, err := api.DefaultRESTClient()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -123,7 +123,7 @@ func TestGetAssignmentList(t *testing.T) {
 		}
 	}]`)
 
-	client, err := gh.RESTClient(nil)
+	client, err := api.DefaultRESTClient()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -167,7 +167,7 @@ func TestGetAssignment(t *testing.T) {
 		}
 	}`)
 
-	client, err := gh.RESTClient(nil)
+	client, err := api.DefaultRESTClient()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -205,7 +205,7 @@ func TestGetAssignmentGrades(t *testing.T) {
 			"group_name": "Group A"
 	}]`)
 
-	client, err := gh.RESTClient(nil)
+	client, err := api.DefaultRESTClient()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -241,7 +241,7 @@ func TestGetClassroom(t *testing.T) {
 		"name": "Classroom Name"
 	}`)
 
-	client, err := gh.RESTClient(nil)
+	client, err := api.DefaultRESTClient()
 	if err != nil {
 		t.Fatal(err)
 	}

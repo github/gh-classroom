@@ -9,7 +9,8 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/cli/cli/v2/pkg/cmdutil"
-	"github.com/cli/go-gh"
+	"github.com/cli/go-gh/v2"
+	"github.com/cli/go-gh/v2/pkg/api"
 	"github.com/github/gh-classroom/cmd/gh-classroom/shared"
 	"github.com/github/gh-classroom/pkg/classroom"
 	"github.com/spf13/cobra"
@@ -30,7 +31,7 @@ func NewCmdStarterRepo(f *cmdutil.Factory) *cobra.Command {
 		If the directory does not exists, it will be created.
 		`),
 		Run: func(cmd *cobra.Command, args []string) {
-			client, err := gh.RESTClient(nil)
+			client, err := api.DefaultRESTClient()
 			if err != nil {
 				log.Fatal(err)
 			}

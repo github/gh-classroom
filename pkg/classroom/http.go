@@ -3,10 +3,10 @@ package classroom
 import (
 	"fmt"
 
-	"github.com/cli/go-gh/pkg/api"
+	"github.com/cli/go-gh/v2/pkg/api"
 )
 
-func ListAssignments(client api.RESTClient, classroomID int, page int, perPage int) (AssignmentList, error) {
+func ListAssignments(client *api.RESTClient, classroomID int, page int, perPage int) (AssignmentList, error) {
 	var response []Assignment
 	err := client.Get(fmt.Sprintf("classrooms/%v/assignments?page=%v&per_page=%v", classroomID, page, perPage), &response)
 	if err != nil {
@@ -22,7 +22,7 @@ func ListAssignments(client api.RESTClient, classroomID int, page int, perPage i
 	return assignmentList, nil
 }
 
-func ListClassrooms(client api.RESTClient, page int, perPage int) ([]Classroom, error) {
+func ListClassrooms(client *api.RESTClient, page int, perPage int) ([]Classroom, error) {
 	var response []Classroom
 
 	err := client.Get(fmt.Sprintf("classrooms?page=%v&per_page=%v", page, perPage), &response)
@@ -33,7 +33,7 @@ func ListClassrooms(client api.RESTClient, page int, perPage int) ([]Classroom, 
 	return response, nil
 }
 
-func GetAssignmentList(client api.RESTClient, assignmentID int, page int, perPage int) ([]AcceptedAssignment, error) {
+func GetAssignmentList(client *api.RESTClient, assignmentID int, page int, perPage int) ([]AcceptedAssignment, error) {
 	var response []AcceptedAssignment
 
 	err := client.Get(fmt.Sprintf("assignments/%v/accepted_assignments?page=%v&per_page=%v", assignmentID, page, perPage), &response)
@@ -43,7 +43,7 @@ func GetAssignmentList(client api.RESTClient, assignmentID int, page int, perPag
 	return response, nil
 }
 
-func GetAssignment(client api.RESTClient, assignmentID int) (Assignment, error) {
+func GetAssignment(client *api.RESTClient, assignmentID int) (Assignment, error) {
 	var response Assignment
 	err := client.Get(fmt.Sprintf("assignments/%v", assignmentID), &response)
 	if err != nil {
@@ -52,7 +52,7 @@ func GetAssignment(client api.RESTClient, assignmentID int) (Assignment, error) 
 	return response, nil
 }
 
-func GetAssignmentGrades(client api.RESTClient, assignmentID int) ([]AssignmentGrade, error) {
+func GetAssignmentGrades(client *api.RESTClient, assignmentID int) ([]AssignmentGrade, error) {
 	var response []AssignmentGrade
 	err := client.Get(fmt.Sprintf("assignments/%v/grades", assignmentID), &response)
 	if err != nil {
@@ -61,7 +61,7 @@ func GetAssignmentGrades(client api.RESTClient, assignmentID int) ([]AssignmentG
 	return response, nil
 }
 
-func GetClassroom(client api.RESTClient, classroomID int) (Classroom, error) {
+func GetClassroom(client *api.RESTClient, classroomID int) (Classroom, error) {
 	var response Classroom
 
 	err := client.Get(fmt.Sprintf("classrooms/%v", classroomID), &response)

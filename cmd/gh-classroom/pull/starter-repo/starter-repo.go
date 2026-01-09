@@ -9,7 +9,8 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/cli/cli/v2/pkg/cmdutil"
-	"github.com/cli/go-gh"
+	"github.com/cli/go-gh/v2"
+	"github.com/cli/go-gh/v2/pkg/api"
 	"github.com/github/gh-classroom/cmd/gh-classroom/shared"
 	"github.com/github/gh-classroom/pkg/classroom"
 	"github.com/spf13/cobra"
@@ -25,7 +26,7 @@ func NewCmdStarterRepoPull(f *cmdutil.Factory) *cobra.Command {
 		Long: heredoc.Doc(`Given a starter repository that was previously cloned run a pull to get any new commits.
 		`),
 		Run: func(cmd *cobra.Command, args []string) {
-			client, err := gh.RESTClient(nil)
+			client, err := api.DefaultRESTClient()
 			if err != nil {
 				log.Fatal(err)
 			}

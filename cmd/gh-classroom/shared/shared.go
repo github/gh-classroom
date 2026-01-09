@@ -7,11 +7,11 @@ import (
 	"sync"
 
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/cli/go-gh/pkg/api"
+	"github.com/cli/go-gh/v2/pkg/api"
 	"github.com/github/gh-classroom/pkg/classroom"
 )
 
-func PromptForClassroom(client api.RESTClient) (classroomId classroom.Classroom, err error) {
+func PromptForClassroom(client *api.RESTClient) (classroomId classroom.Classroom, err error) {
 	if err != nil {
 		return classroom.Classroom{}, err
 	}
@@ -57,7 +57,7 @@ func PromptForClassroom(client api.RESTClient) (classroomId classroom.Classroom,
 	return optionMap[answer.Classroom], nil
 }
 
-func PromptForAssignment(client api.RESTClient, classroomId int) (assignment classroom.Assignment, err error) {
+func PromptForAssignment(client *api.RESTClient, classroomId int) (assignment classroom.Assignment, err error) {
 	assignmentList, err := classroom.ListAssignments(client, classroomId, 1, 100)
 	if err != nil {
 		return classroom.Assignment{}, err
@@ -100,7 +100,7 @@ func PromptForAssignment(client api.RESTClient, classroomId int) (assignment cla
 
 // Get the total number of accepted assignments and the number of pages necessary to get them all
 // Calculate the number of pages necessary to get all of the assignments with a given perPage
-func NumberOfAcceptedAssignmentsAndPages(client api.RESTClient, assignmentID int, perPage int) (numPages, totalAccepted int) {
+func NumberOfAcceptedAssignmentsAndPages(client *api.RESTClient, assignmentID int, perPage int) (numPages, totalAccepted int) {
 	assignment, err := classroom.GetAssignment(client, assignmentID)
 	if err != nil {
 		log.Fatal(err)
@@ -110,7 +110,7 @@ func NumberOfAcceptedAssignmentsAndPages(client api.RESTClient, assignmentID int
 	return
 }
 
-func ListAcceptedAssignments(client api.RESTClient, assignmentID int, page int, perPage int) (classroom.AcceptedAssignmentList, error) {
+func ListAcceptedAssignments(client *api.RESTClient, assignmentID int, page int, perPage int) (classroom.AcceptedAssignmentList, error) {
 	response, err := classroom.GetAssignmentList(client, assignmentID, page, perPage)
 	if err != nil {
 		return classroom.AcceptedAssignmentList{}, err
@@ -129,7 +129,7 @@ type assignmentList struct {
 	Error       error
 }
 
-func ListAllAcceptedAssignments(client api.RESTClient, assignmentID int, perPage int) (classroom.AcceptedAssignmentList, error) {
+func ListAllAcceptedAssignments(client *api.RESTClient, assignmentID int, perPage int) (classroom.AcceptedAssignmentList, error) {
 
 	numPages, totalAccepted := NumberOfAcceptedAssignmentsAndPages(client, assignmentID, perPage)
 
