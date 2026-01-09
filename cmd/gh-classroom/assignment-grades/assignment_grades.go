@@ -52,7 +52,7 @@ func NewCmdAssignmentGrades(f *cmdutil.Factory) *cobra.Command {
 
 			if web {
 				if term.IsTerminalOutput() {
-					fmt.Fprintln(cmd.ErrOrStderr(), "Opening in your browser.")
+					_, _ = fmt.Fprintln(cmd.ErrOrStderr(), "Opening in your browser.")
 				}
 				browser := browser.New("", cmd.OutOrStdout(), cmd.OutOrStderr())
 				err := browser.Browse(assignment.Url())
@@ -75,7 +75,7 @@ func NewCmdAssignmentGrades(f *cmdutil.Factory) *cobra.Command {
 			if err != nil {
 				log.Fatalln("failed to open file", err)
 			}
-			defer f.Close()
+			defer func() { _ = f.Close() }()
 
 			w := csv.NewWriter(f)
 			defer w.Flush()

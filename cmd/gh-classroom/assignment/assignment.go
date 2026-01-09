@@ -73,7 +73,7 @@ func OpenInBrowser(url string) {
 	io := iostreams.System()
 	c := io.ColorScheme()
 	if term.IsTerminalOutput() {
-		fmt.Fprintln(io.ErrOut, c.Yellow("\nOpening assigment in your browser...\n"))
+		_, _ = fmt.Fprintln(io.ErrOut, c.Yellow("\nOpening assigment in your browser...\n"))
 	}
 
 	browser := browser.New("", io.Out, io.ErrOut)
