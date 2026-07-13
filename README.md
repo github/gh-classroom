@@ -1,5 +1,8 @@
 ## GitHub Classroom CLI
 
+> ⚠️ **WARNING** ⚠️
+> **Closing down notice:** This extension is deprecated. The GitHub Classroom application that provides data for `gh classroom` is sunsetting, so this extension will stop working as that shutdown completes. For more information, see the [GitHub Classroom sunset notice](https://gh.io/classroom-sunset).
+
 GitHub Classroom CLI Extension is a powerful and easy-to-use command line tool that enhances the functionality of the GitHub CLI, specifically tailored for educators using GitHub Classroom.
 
 [Learn more about how to use this extension on docs.github.com](https://docs.github.com/en/education/manage-coursework-with-github-classroom/teach-with-github-classroom/using-github-classroom-with-github-cli)
